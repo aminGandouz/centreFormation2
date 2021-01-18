@@ -26,6 +26,7 @@ public class MySqlCentreDao implements CentreDao {
 
     private MySqlCentreDao() {
     }
+
     /* TODO REMTTRE LA TABLE DONNER */
     public Status getStatusById(int idStatus) {
         Status status = null;
@@ -261,17 +262,29 @@ public class MySqlCentreDao implements CentreDao {
     }
 
     @Override
-    public void deleteFormationDuFormateur(int idFormateur, int idFormation) {
+    public Boolean deleteFormationDuFormateur(int idFormateur, int idFormation) {
         Connection c = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
+        String sqlSessionExist = " select idSession from session where session.IdFormation = ? and session.IdFormateur = ? and DATEDIFF(now(),DateFin) <= ? ";
         String sql = "DELETE FROM `donner` WHERE IdUtilisateur = ? and IdFormation = ?  ";
+        Boolean erase = false;    
         try {
             c = MySqlDaoFactory.getInstance().getConnection();
-            ps = c.prepareStatement(sql);
-            ps.setInt(1, idFormateur);
-            ps.setInt(2, idFormation);
-            ps.executeUpdate();
+            ps = c.prepareStatement(sqlSessionExist);
+            ps.setInt(1, idFormation);
+            ps.setInt(2, idFormateur);
+            ps.setInt(3, 0);
+            rs = ps.executeQuery();
+
+            if (!rs.next()) {
+                ps = c.prepareStatement(sql);
+                ps.setInt(1, idFormateur);
+                ps.setInt(2, idFormation);
+                ps.executeUpdate();
+                erase = true;
+            }
+
         } catch (SQLException e) {
             System.out.println("Probleme avec la requete SQL deleteFormationDuFormateur(int idFormateur, int idFormation))");
             e.printStackTrace();
@@ -280,6 +293,7 @@ public class MySqlCentreDao implements CentreDao {
             MySqlDaoFactory.closeStatement(ps);
             MySqlDaoFactory.closeConnection(c);
         }
+        return erase;
     }
 
     @Override
@@ -312,7 +326,7 @@ public class MySqlCentreDao implements CentreDao {
 
     @Override
     public List<Formation> getListFormationsByNameFormation(String nomFormation) {
-       List<Formation> listFormation = new ArrayList<>();
+        List<Formation> listFormation = new ArrayList<>();
         Connection c = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -320,7 +334,7 @@ public class MySqlCentreDao implements CentreDao {
         try {
             c = MySqlDaoFactory.getInstance().getConnection();
             ps = c.prepareStatement(sql);
-            ps.setString(1, "%"+nomFormation+"%");
+            ps.setString(1, "%" + nomFormation + "%");
             rs = ps.executeQuery();
             while (rs.next()) {
                 Formation formation = new Formation(rs.getInt(1), rs.getString(2), rs.getFloat(3), rs.getInt(4), rs.getInt(5), rs.getInt(6));
@@ -337,4 +351,3 @@ public class MySqlCentreDao implements CentreDao {
         return listFormation;
     }
 }
-

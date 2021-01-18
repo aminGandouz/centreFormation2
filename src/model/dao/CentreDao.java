@@ -21,7 +21,7 @@ public interface CentreDao {
 
     public List<Formation> getListDuFormateur(Integer idUtilisateur);
 
-    public void deleteFormationDuFormateur(int idFormateur, int idFormation);
+    public Boolean deleteFormationDuFormateur(int idFormateur, int idFormation);
 
     public Boolean isFormateurExist(String formateur);
 

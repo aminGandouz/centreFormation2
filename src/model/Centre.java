@@ -173,10 +173,10 @@ public class Centre {
         return listFormationDuFormateur;
     }
 
-    public void deleteFormationDuFormateur(int idFormateur, int idFormation) {
+    public Boolean deleteFormationDuFormateur(int idFormateur, int idFormation) {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         CentreDao centreDao = factory.createCentreDao();
-        centreDao.deleteFormationDuFormateur(idFormateur, idFormation);
+        return centreDao.deleteFormationDuFormateur(idFormateur, idFormation);
     }
 
     public Boolean isFormateurExist(String formateur) {

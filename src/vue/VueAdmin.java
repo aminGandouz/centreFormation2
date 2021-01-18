@@ -322,4 +322,12 @@ public class VueAdmin {
     public void choixDeLaFormation() {
         System.out.println("\n" +" Choisissez la formation a effacé "+ "\n");
     }
+
+    public void formationDelete() {
+            System.out.println("\n" +" La formation a bien été effacé  "+ "\n");
+    }
+
+    public void formationNoDelete() {
+        System.out.println("\n" +" La formation n'a pas été éffacé il y a encore une session qui existe !!!  "+ "\n");
+    }
 }

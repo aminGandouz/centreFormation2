@@ -28,8 +28,7 @@ public class ControlerLogin implements ControlerUtils {
                 } while (password == null || password.trim().isEmpty());
             }
         } while (login == null || login.trim().isEmpty());
-
-        //controler.setUserConnecte(Utilisateur.authentification(login, password));
+        
         controler.setUserConnecte(Utilisateur.authentificationLogin(login));
         if (controler.getUserConnecte() == null) {
             vueLogin.erreurUser();
@@ -37,13 +36,13 @@ public class ControlerLogin implements ControlerUtils {
         } else {
             if (BCrypt.checkpw(password, controler.getUserConnecte().getPassword())) {
                 if (controler.getUserConnecte() instanceof Stagiaire) {
-                    Stagiaire stagiaire = (Stagiaire) Utilisateur.authentification(login, password);
+                    Stagiaire stagiaire = (Stagiaire) Utilisateur.authentificationLogin(login);
                     ctrlStagiaire.menusStagiaire(stagiaire);
                 } else if (controler.getUserConnecte() instanceof Admin) {
-                    Admin admin = (Admin) Utilisateur.authentification(login, password);
+                    Admin admin = (Admin) Utilisateur.authentificationLogin(login);
                     ctrlAdmin.menuAdmin(admin);
                 } else if (controler.getUserConnecte() instanceof Formateur) {
-                    Formateur formateur = (Formateur) Utilisateur.authentification(login, password);
+                    Formateur formateur = (Formateur) Utilisateur.authentificationLogin(login);
                     ctrlFormateur.menuFormateur(formateur);
                 }
             } else {

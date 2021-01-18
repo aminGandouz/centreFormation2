@@ -174,7 +174,7 @@ public class ControlerAdmin implements ControlerUtils {
             VueFormateur.FormateurNotExist();
             effacerFormateur();
         } else {
-          model.getFormateur().deleteFormateurByName(formateur);
+            model.getFormateur().deleteFormateurByName(formateur);
         }
     }
 
@@ -249,14 +249,14 @@ public class ControlerAdmin implements ControlerUtils {
         vueAdmin.erreur();
     }
 
-    private void CommuniquerFormateurPrestations() {        
+    private void CommuniquerFormateurPrestations() {
         s.nextLine();
         String nomFormateur;
         List<Session> listSessionFormateur = new ArrayList<>();
-          do {
-                vueAdmin.entrerNom();
-                nomFormateur = s.nextLine();
-            } while (nomFormateur == null || nomFormateur.trim().isEmpty());       
+        do {
+            vueAdmin.entrerNom();
+            nomFormateur = s.nextLine();
+        } while (nomFormateur == null || nomFormateur.trim().isEmpty());
         // do {                      
         listSessionFormateur = model.getCentre().getListSessionByNameFormateur(nomFormateur);
 //                    s.nextLine();
@@ -325,12 +325,16 @@ public class ControlerAdmin implements ControlerUtils {
             int choixDeLaFormation = s.nextInt();
             Formation existe = model.getCentre().getFormationById(choixDeLaFormation);
             if (existe == null) {
-                ajoutFormationAuFormateur(admin);
+                deleteFormationDuFormateur(admin);
             } else {
-                model.getCentre().deleteFormationDuFormateur(f.getIdUtilisateur(), existe.getIdFormation());
+                Boolean formationDelete = model.getCentre().deleteFormationDuFormateur(f.getIdUtilisateur(), existe.getIdFormation());
+                if (formationDelete) {
+                    vueAdmin.formationDelete();
+                } else {
+                    vueAdmin.formationNoDelete();
+                }
                 gererFormateur(admin);
             }
-
         }
     }
 

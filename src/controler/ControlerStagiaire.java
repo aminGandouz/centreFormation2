@@ -44,8 +44,7 @@ public class ControlerStagiaire implements ControlerUtils {
             case 4:
                 System.out.println("consulter");
                 vueStagiaire.listDesInscriptions();
-                List<Inscription> listInscription
-                        = stagiaire.getListDesInscriptions();
+                List<Inscription> listInscription = stagiaire.getListDesInscriptions();
                 if (listInscription.isEmpty()) {
                     vueStagiaire.notSubscribe();
                     menusStagiaire(stagiaire);
