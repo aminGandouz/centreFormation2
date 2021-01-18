@@ -39,11 +39,11 @@ public class MySqlSessionDao implements SessionDao {
         if (f == null) {
             return null;
         }
-        String sql3 = " select s.IdSession,s.IdFormateur,u.Nom,u.Prenom,u.Adresse,u.Telephone,u.Email,u.Login,u.Password,ro.IdRole,ro.DenomRole,\n " +
-" st.IdStatus,st.DenomStatus,s.DateDebut,s.DateFin,lo.IdLocal,lo.DenomLocal \n " +
-" from session as s,formation as f,locaux as lo,utilisateur as u,roles as ro,status as st,donner as d\n " +
-" where s.IdFormation = f.IdFormation and s.IdFormateur = u.IdUtilisateur\n " +
-" and s.Local = lo.IdLocal and u.Role = ro.IdRole and u.Status = st.IdStatus and d.IdFormation = s.IdFormation  and ro.IdRole = ? and u.Nom = ? group by s.IdSession ";
+        String sql3 = " select s.IdSession,s.IdFormateur,u.Nom,u.Prenom,u.Adresse,u.Telephone,u.Email,u.Login,u.Password,ro.IdRole,ro.DenomRole,\n "
+                + " st.IdStatus,st.DenomStatus,s.DateDebut,s.DateFin,lo.IdLocal,lo.DenomLocal \n "
+                + " from session as s,formation as f,locaux as lo,utilisateur as u,roles as ro,status as st,donner as d\n "
+                + " where s.IdFormation = f.IdFormation and s.IdFormateur = u.IdUtilisateur\n "
+                + " and s.Local = lo.IdLocal and u.Role = ro.IdRole and u.Status = st.IdStatus and d.IdFormation = s.IdFormation  and ro.IdRole = ? and u.Nom = ? group by s.IdSession ";
         try {
             c = MySqlDaoFactory.getInstance().getConnection();
             ps = c.prepareStatement(sql3);
@@ -53,7 +53,7 @@ public class MySqlSessionDao implements SessionDao {
             while (rs.next()) {
                 Session session = new Session(rs.getInt(1),
                         new Formateur(rs.getInt(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9),
-                            new Role(rs.getInt(10), rs.getString(11))),
+                                new Role(rs.getInt(10), rs.getString(11))),
                         rs.getDate(14), rs.getDate(15),
                         new Local(rs.getInt(16), rs.getString(17)));
                 listSession.add(session);
@@ -77,16 +77,16 @@ public class MySqlSessionDao implements SessionDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         Utilisateur u = MySqlUtilisateurDao.getInstance().getUserByName(nomFormateur);
-        String sql = " select s.IdSession,\n " +
-" s.IdFormateur,u.Nom,u.Prenom,u.Adresse,u.Telephone,u.Email,u.Login,u.Password,ro.IdRole,ro.DenomRole,\n " +
-" st.IdStatus,st.DenomStatus,s.DateDebut,s.DateFin,lo.IdLocal,lo.DenomLocal \n " +
-" from session as s,formation as f,locaux as lo,utilisateur as u,roles as ro,status as st \n " +
-" where s.IdFormation = f.IdFormation\n " +
-" and s.IdFormateur = u.IdUtilisateur\n " +
-" and s.Local = lo.IdLocal\n " +
-" and u.Role = ro.IdRole \n " +
-" and u.Status = st.IdStatus \n " +
-" and u.Nom = ? ";
+        String sql = " select s.IdSession,\n "
+                + " s.IdFormateur,u.Nom,u.Prenom,u.Adresse,u.Telephone,u.Email,u.Login,u.Password,ro.IdRole,ro.DenomRole,\n "
+                + " st.IdStatus,st.DenomStatus,s.DateDebut,s.DateFin,lo.IdLocal,lo.DenomLocal \n "
+                + " from session as s,formation as f,locaux as lo,utilisateur as u,roles as ro,status as st \n "
+                + " where s.IdFormation = f.IdFormation\n "
+                + " and s.IdFormateur = u.IdUtilisateur\n "
+                + " and s.Local = lo.IdLocal\n "
+                + " and u.Role = ro.IdRole \n "
+                + " and u.Status = st.IdStatus \n "
+                + " and u.Nom = ? ";
 
         try {
             c = MySqlDaoFactory.getInstance().getConnection();
@@ -96,7 +96,7 @@ public class MySqlSessionDao implements SessionDao {
             while (rs.next()) {
                 Session session = new Session(rs.getInt(1),
                         new Formateur(rs.getInt(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9),
-                            new Role(rs.getInt(10), rs.getString(11))),
+                                new Role(rs.getInt(10), rs.getString(11))),
                         rs.getDate(14), rs.getDate(15),
                         new Local(rs.getInt(16), rs.getString(17)));
                 listSession.add(session);
@@ -119,16 +119,16 @@ public class MySqlSessionDao implements SessionDao {
         Connection c = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String sql3 = " select s.IdSession,\n " +
-" s.IdFormateur,u.Nom,u.Prenom,u.Adresse,u.Telephone,u.Email,u.Login,u.Password,ro.IdRole,ro.DenomRole,\n " +
-" st.IdStatus,st.DenomStatus,s.DateDebut,s.DateFin,lo.IdLocal,lo.DenomLocal \n " +
-" from session as s,formation as f,locaux as lo,utilisateur as u,roles as ro,status as st \n " +
-" where s.IdFormation = f.IdFormation\n " +
-" and s.IdFormateur = u.IdUtilisateur\n " +
-" and s.Local = lo.IdLocal\n " +
-" and u.Role = ro.IdRole \n " +
-" and u.Status = st.IdStatus \n " +
-" and s.IdSession = ? ";
+        String sql3 = " select s.IdSession,\n "
+                + " s.IdFormateur,u.Nom,u.Prenom,u.Adresse,u.Telephone,u.Email,u.Login,u.Password,ro.IdRole,ro.DenomRole,\n "
+                + " st.IdStatus,st.DenomStatus,s.DateDebut,s.DateFin,lo.IdLocal,lo.DenomLocal \n "
+                + " from session as s,formation as f,locaux as lo,utilisateur as u,roles as ro,status as st \n "
+                + " where s.IdFormation = f.IdFormation\n "
+                + " and s.IdFormateur = u.IdUtilisateur\n "
+                + " and s.Local = lo.IdLocal\n "
+                + " and u.Role = ro.IdRole \n "
+                + " and u.Status = st.IdStatus \n "
+                + " and s.IdSession = ? ";
 
         try {
             c = MySqlDaoFactory.getInstance().getConnection();
@@ -139,7 +139,7 @@ public class MySqlSessionDao implements SessionDao {
             if (rs.next()) {
                 session = new Session(rs.getInt(1),
                         new Formateur(rs.getInt(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9),
-                            new Role(rs.getInt(10), rs.getString(11))),
+                                new Role(rs.getInt(10), rs.getString(11))),
                         rs.getDate(14), rs.getDate(15),
                         new Local(rs.getInt(16), rs.getString(17)));
             }
@@ -162,15 +162,15 @@ public class MySqlSessionDao implements SessionDao {
         Connection c = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String sql3 = " select s.IdSession,\n " +
-" s.IdFormateur,u.Nom,u.Prenom,u.Adresse,u.Telephone,u.Email,u.Login,u.Password,ro.IdRole,ro.DenomRole,\n " +
-" st.IdStatus,st.DenomStatus,s.DateDebut,s.DateFin,lo.IdLocal,lo.DenomLocal \n " +
-" from session as s,formation as f,locaux as lo,utilisateur as u,roles as ro,status as st \n " +
-" where s.IdFormation = f.IdFormation\n " +
-" and s.IdFormateur = u.IdUtilisateur\n " +
-" and s.Local = lo.IdLocal\n " +
-" and u.Role = ro.IdRole \n " +
-" and u.Status = st.IdStatus ";
+        String sql3 = " select s.IdSession,\n "
+                + " s.IdFormateur,u.Nom,u.Prenom,u.Adresse,u.Telephone,u.Email,u.Login,u.Password,ro.IdRole,ro.DenomRole,\n "
+                + " st.IdStatus,st.DenomStatus,s.DateDebut,s.DateFin,lo.IdLocal,lo.DenomLocal \n "
+                + " from session as s,formation as f,locaux as lo,utilisateur as u,roles as ro,status as st \n "
+                + " where s.IdFormation = f.IdFormation\n "
+                + " and s.IdFormateur = u.IdUtilisateur\n "
+                + " and s.Local = lo.IdLocal\n "
+                + " and u.Role = ro.IdRole \n "
+                + " and u.Status = st.IdStatus ";
 
         try {
             c = MySqlDaoFactory.getInstance().getConnection();
@@ -180,7 +180,7 @@ public class MySqlSessionDao implements SessionDao {
             while (rs.next()) {
                 Session session = new Session(rs.getInt(1),
                         new Formateur(rs.getInt(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9),
-                            new Role(rs.getInt(10), rs.getString(11))),
+                                new Role(rs.getInt(10), rs.getString(11))),
                         rs.getDate(14), rs.getDate(15),
                         new Local(rs.getInt(16), rs.getString(17)));
                 listSession.add(session);
@@ -224,6 +224,7 @@ public class MySqlSessionDao implements SessionDao {
             MySqlDaoFactory.closeConnection(c);
         }
     }
+
     /* TODO faire un update au lieu de delete */
     @Override
     public void deleteSessionById(Integer idSession) {
@@ -252,16 +253,16 @@ public class MySqlSessionDao implements SessionDao {
         Connection c = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String sql = " select s.IdSession,\n " +
-" s.IdFormateur,u.Nom,u.Prenom,u.Adresse,u.Telephone,u.Email,u.Login,u.Password,ro.IdRole,ro.DenomRole,\n " +
-" st.IdStatus,st.DenomStatus,s.DateDebut,s.DateFin,lo.IdLocal,lo.DenomLocal \n " +
-" from session as s,formation as f,locaux as lo,utilisateur as u,roles as ro,status as st \n " +
-" where s.IdFormation = f.IdFormation\n " +
-" and s.IdFormateur = u.IdUtilisateur\n " +
-" and s.Local = lo.IdLocal\n " +
-" and u.Role = ro.IdRole \n " +
-" and u.Status = st.IdStatus\n " +
-" and s.IdFormation = ? ";
+        String sql = " select s.IdSession,\n "
+                + " s.IdFormateur,u.Nom,u.Prenom,u.Adresse,u.Telephone,u.Email,u.Login,u.Password,ro.IdRole,ro.DenomRole,\n "
+                + " st.IdStatus,st.DenomStatus,s.DateDebut,s.DateFin,lo.IdLocal,lo.DenomLocal \n "
+                + " from session as s,formation as f,locaux as lo,utilisateur as u,roles as ro,status as st \n "
+                + " where s.IdFormation = f.IdFormation\n "
+                + " and s.IdFormateur = u.IdUtilisateur\n "
+                + " and s.Local = lo.IdLocal\n "
+                + " and u.Role = ro.IdRole \n "
+                + " and u.Status = st.IdStatus\n "
+                + " and s.IdFormation = ? ";
 
         try {
             c = MySqlDaoFactory.getInstance().getConnection();
@@ -271,7 +272,7 @@ public class MySqlSessionDao implements SessionDao {
             while (rs.next()) {
                 Session session = new Session(rs.getInt(1),
                         new Formateur(rs.getInt(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9),
-                            new Role(rs.getInt(10), rs.getString(11))),
+                                new Role(rs.getInt(10), rs.getString(11))),
                         rs.getDate(14), rs.getDate(15),
                         new Local(rs.getInt(16), rs.getString(17)));
                 listSession.add(session);
@@ -287,47 +288,54 @@ public class MySqlSessionDao implements SessionDao {
         }
         return listSession;
     }
-}
-// ps.setString(1, nameSession);
-// ps.setString(1, nameSession);
 
-//        String sql = "SELECT * from utilisateur \n"
-//                + "join inscrire ON utilisateur.idUtilisateur = inscrire.idUtilisateur \n"
-//                + "join session on session.idSession = inscrire.idSession \n"
-//                + "join formation on formation.idFormation = session.idFormation \n"
-//                + "where utilisateur.role = \"formateur\" and utilisateur.nom = ? ";
-//        String sql = "select * from session join formation on session.idSession = formation.idFormation where formation.intitule LIKE ? ";
-//        String sql2 = "select s.IdSession,\n"
-//                + "s.IdFormation,f.Intitule,f.Prix,f.Duree,f.MaxParticipant,f.NbreParticipantMin,\n"
-//                + "s.IdFormateur,u.Nom,u.Prenom,u.Adresse,u.Telephone,u.Email,u.Login,u.Password,ro.IdRole,ro.DenomRole,\n"
-//                + "st.IdStatus,st.DenomStatus,s.DateDebut,s.DateFin,lo.IdLocal,lo.DenomLocal \n"
-//                + "from session as s,formation as f,locaux as lo,utilisateur as u,roles as ro,status as st \n"
-//                + "where s.IdFormation = f.IdFormation\n"
-//                + "and s.IdFormateur = u.IdUtilisateur\n"
-//                + "and s.Local = lo.IdLocal\n"
-//                + "and u.Role = ro.IdRole \n"
-//                + "and u.Status = st.IdStatus "
-//                + "and f.Intitule LIKE ?";
-// new Formation(rs.getInt(2), rs.getString(3), rs.getFloat(4), rs.getInt(5), rs.getInt(6), rs.getInt(7))
-//            new Formateur(rs.getInt(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15),
-//                                new Role(rs.getInt(16), rs.getString(17))),
-//        String sql2 = "select s.IdSession,\n"
-//                + "s.IdFormation,f.Intitule,f.Prix,f.Duree,f.MaxParticipant,f.NbreParticipantMin,\n"
-//                + "s.IdFormateur,u.Nom,u.Prenom,u.Adresse,u.Telephone,u.Email,u.Login,u.Password,ro.IdRole,ro.DenomRole,\n"
-//                + "st.IdStatus,st.DenomStatus,s.DateDebut,s.DateFin,lo.IdLocal,lo.DenomLocal \n"
-//                + "from session as s,formation as f,locaux as lo,utilisateur as u,roles as ro,status as st \n"
-//                + "where s.IdFormation = f.IdFormation\n"
-//                + "and s.IdFormateur = u.IdUtilisateur\n"
-//                + "and s.Local = lo.IdLocal\n"
-//                + "and u.Role = ro.IdRole \n"
-//                + "and u.Status = st.IdStatus";
-// Session session = new Session(rs.getInt("idSession"), rs.getInt("idFormation"), rs.getInt("idFormateur"), rs.getDate("dateDebut"), rs.getDate("dateFin"), rs.getString("local"), rs.getString("jours"));
-//            while (rs.next()) {
-//                Session session = new Session(rs.getInt(1),
-//                        new Formation(rs.getInt(2), rs.getString(3), rs.getFloat(4), rs.getInt(5), rs.getInt(6), rs.getInt(7)),
-//                        new Formateur(rs.getInt(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15),
-//                                new Role(rs.getInt(16), rs.getString(17))),
-//                        rs.getDate(20), rs.getDate(21),
-//                        new Local(rs.getInt(22), rs.getString(23)));
-//                listSession.add(session);
-//            }
+    /* TODO vérifier la requete */
+    @Override
+    public List<Session> getListSessionDispoByIdFormation(Integer choixDeLaFormation) {
+        List<Session> listSession = new ArrayList<>();
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String sql = " select s.IdSession,\n "
+                + " s.IdFormateur,u.Nom,u.Prenom,u.Adresse,u.Telephone,u.Email,u.Login,u.Password,\n "
+                + " (select count(inscrire.IdSession) from inscrire \n "
+                + " join session on session.IdFormation = inscrire.IdSession\n "
+                + " where session.IdSession = ? and DATEDIFF(session.DateFin,now())< ?) as IdRole\n "
+                + " ,ro.DenomRole,\n "
+                + " st.IdStatus,st.DenomStatus,s.DateDebut,s.DateFin,lo.IdLocal,lo.DenomLocal \n "
+                + " from session as s,formation as f,locaux as lo,utilisateur as u,roles as ro,status as st \n "
+                + " where s.IdFormation = f.IdFormation\n "
+                + " and s.IdFormateur = u.IdUtilisateur\n "
+                + " and s.Local = lo.IdLocal\n "
+                + " and u.Role = ro.IdRole \n "
+                + " and u.Status = st.IdStatus\n "
+                + " and s.IdFormation = ? ";
+
+        try {
+            c = MySqlDaoFactory.getInstance().getConnection();
+            ps = c.prepareStatement(sql);
+            ps.setInt(1, choixDeLaFormation);
+            ps.setInt(2, 0);
+            ps.setInt(3, choixDeLaFormation);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Session session = new Session(rs.getInt(1),
+                        new Formateur(rs.getInt(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9),
+                                new Role(rs.getInt(10), rs.getString(11))),
+                        rs.getDate(14), rs.getDate(15),
+                        new Local(rs.getInt(16), rs.getString(17)));
+                listSession.add(session);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Probleme avec la requete SQL getListSessionDispoByIdFormation(Integer choixDeLaFormation)");
+            e.printStackTrace();
+        } finally {
+            MySqlDaoFactory.closeResultSet(rs);
+            MySqlDaoFactory.closeStatement(ps);
+            MySqlDaoFactory.closeConnection(c);
+        }
+        return listSession;
+    }
+}
+
