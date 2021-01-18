@@ -309,5 +309,32 @@ public class MySqlCentreDao implements CentreDao {
         }
         return isFormateurExist;
     }
+
+    @Override
+    public List<Formation> getListFormationsByNameFormation(String nomFormation) {
+       List<Formation> listFormation = new ArrayList<>();
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String sql = " select IdFormation,Intitule,Prix,Duree,MaxParticipant,NbreParticipantMin from formation where intitule like ? ";
+        try {
+            c = MySqlDaoFactory.getInstance().getConnection();
+            ps = c.prepareStatement(sql);
+            ps.setString(1, "%"+nomFormation+"%");
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Formation formation = new Formation(rs.getInt(1), rs.getString(2), rs.getFloat(3), rs.getInt(4), rs.getInt(5), rs.getInt(6));
+                listFormation.add(formation);
+            }
+        } catch (SQLException e) {
+            System.out.println("Problème avec la requete SQL getListFormationsByNameFormation(String nomFormation)");
+            e.printStackTrace();
+        } finally {
+            MySqlDaoFactory.closeResultSet(rs);
+            MySqlDaoFactory.closeStatement(ps);
+            MySqlDaoFactory.closeConnection(c);
+        }
+        return listFormation;
+    }
 }
 

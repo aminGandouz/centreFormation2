@@ -66,6 +66,7 @@ public class Controler implements ControlerUtils {
      * ***** Case 2 -> from methode start() ******
      */
     public void choixCatalogue() {
+        String nomFormation = null;
         vAccueil.choixDuCatalogue();
         int choixCataogue = choixMenus2(1, 3);
         List<Formation> listFormationParNom = new ArrayList<>();
@@ -73,16 +74,12 @@ public class Controler implements ControlerUtils {
         switch (choixCataogue) {
             case 1:
                 do {
-                    vAccueil.rechercheCatalogue();
-                    String nomFormation = s.next();
-                    listFormations = model.getCentre().getListFormations();
-                    for (Formation formation : listFormations) {
-                        /// !!!!!! retirer la logique et aller chercher en base de donnée !!!!!!!///////
-                        if (formation.getIntitule().contains(nomFormation)) {// comme le LIKE
-                            listFormationParNom.add(formation);
-                        }
-                    }
-                } while (listFormations.isEmpty() || listFormations == null);
+                    do {
+                        vAccueil.rechercheCatalogue();
+                        nomFormation = s.next();
+                    } while (nomFormation == null || nomFormation.trim().isEmpty());
+                    listFormationParNom = model.getCentre().getListFormationsByNameFormation(nomFormation);
+                } while (listFormationParNom.isEmpty() || listFormationParNom == null);
                 vAccueil.afficheList(listFormationParNom);
                 choixCatalogue();
                 break;

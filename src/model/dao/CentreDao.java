@@ -25,5 +25,7 @@ public interface CentreDao {
 
     public Boolean isFormateurExist(String formateur);
 
+    public List<Formation> getListFormationsByNameFormation(String nomFormation);
+
 }
     //public List<Utilisateur> getListformateur();

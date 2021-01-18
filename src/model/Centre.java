@@ -185,17 +185,14 @@ public class Centre {
         return centreDao.isFormateurExist(formateur);
     }
 
+    public List<Formation> getListFormationsByNameFormation(String nomFormation) {
+        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
+        CentreDao centreDao = factory.createCentreDao();
+        return centreDao.getListFormationsByNameFormation(nomFormation);
+    }
+
 }
 
-//    public List<Formation> getListFormationAvecNom(String nomFormation) {
-//        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
-//        CentreDao centreDao = factory.createCentreDao();
-//        listFormation = centreDao.getListFormationAvecNom(nomFormation);
-////        FormationDao formationDao = factory.createFormationDao();
-////        listFormation = formationDao.getListFormation();
-//        return listFormation;
-//
-//    }
 //    public List<Session> getListFormationByNameFormateur(String nameSession) {
 //        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
 //        SessionDao sessionDao = factory.createSessionDao();
