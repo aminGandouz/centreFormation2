@@ -21,35 +21,22 @@ public class ControlerSession implements ControlerUtils {
     private Formation formation = new Formation();
     private Formateur formateur = new Formateur();
     private Local local = new Local();
-  
 
     @Override
     public void erreur() {
         ///// 
     }
-    
+
     ////// !!!!!!!!!!!!!! problème avec addSession Date Date Date Calendar Calendar Calendar
     public void addSession(Formation form) {
         formation = model.getCentre().getFormationById(form.getIdFormation());
-        //session.setFormation(formation);
-        vueAdmin.faireUnChoixValide();
-
-        List<Formateur> listFormateur = model.getCentre().getAllFormateur();
-        vueFormateur.afficheListFormateur(listFormateur);
-        vueAdmin.faireUnChoixValide();
-        int choixFormateur = s.nextInt();
-        Formateur f = new Formateur();
-        f = (Formateur) model.getCentre().getUserById(choixFormateur);
-        if (f != null) {
-            session.setFormateur(f);
-        } else {
-            vueAdmin.erreurFormateur();
-            addSession(form);
-        }
         s.nextLine();
-
-        vueAdmin.entrerDateDebut();
-        String dateDeb = s.nextLine();
+        String dateDeb = null;
+        String regex = "^(1[0-2]|0[1-9])-(3[01]|[12][0-9]|0[1-9])-[0-9]{4}$";
+        do {
+            vueAdmin.entrerDateDebut();
+            dateDeb = s.nextLine();
+        } while (!dateDeb.matches(regex));
         Date d = null;
         try {
             d = new SimpleDateFormat("dd-MM-yyyy").parse(dateDeb);
@@ -70,8 +57,27 @@ public class ControlerSession implements ControlerUtils {
 //            Logger.getLogger(ControlerSession.class.getName()).log(Level.SEVERE, null, ex);
 //        }
 
-        List<Local> listLocaux = model.getCentre().getAllLocaux();
-        vueAdmin.afficherListLocaux(listLocaux);
+        //List<Formateur> listFormateur = model.getCentre().getAllFormateur();
+        List<Formateur> listFormateurDispo = model.getCentre().getFormateurByFormation(form);
+        vueFormateur.afficheListFormateur(listFormateurDispo);
+        System.out.println(listFormateurDispo);
+        if (listFormateurDispo.isEmpty()) {
+            vueAdmin.aucunFormateur();
+            ctrlFormation.gererSessionFormation(form);
+        }
+        vueAdmin.faireUnChoixValide();
+        int choixFormateur = s.nextInt();
+        Formateur f = new Formateur();
+        f = (Formateur) model.getCentre().getUserById(choixFormateur);
+        if (f != null) {
+            session.setFormateur(f);
+        } else {
+            vueAdmin.erreurFormateur();
+            ctrlFormation.gererSessionFormation(form);
+        }
+        s.nextLine();
+        List<Local> listLocauxDispo = model.getCentre().getLocauxDispo(session);
+        vueAdmin.afficherListLocaux(listLocauxDispo);
         vueAdmin.faireUnChoixValide();
         int choixlocal = s.nextInt();
         Local local = new Local();
@@ -82,9 +88,7 @@ public class ControlerSession implements ControlerUtils {
             vueAdmin.erreurLocal();
             addSession(form);
         }
-
-        Session.addSession(session,form.getIdFormation());
-
+        Session.addSession(session, form.getIdFormation());
     }
 
     public void deleteSession(Formation form) {

@@ -3,6 +3,7 @@ package model.dao;
 import java.util.List;
 import model.Formation;
 import model.Local;
+import model.Session;
 import model.Status;
 
 public interface CentreDao {
@@ -26,6 +27,8 @@ public interface CentreDao {
     public Boolean isFormateurExist(String formateur);
 
     public List<Formation> getListFormationsByNameFormation(String nomFormation);
+
+    public List<Local> getLocauxDispo(Session session);
 
 }
     //public List<Utilisateur> getListformateur();

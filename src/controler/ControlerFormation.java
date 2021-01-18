@@ -205,7 +205,7 @@ public class ControlerFormation implements ControlerUtils {
 
         switch (choix) {
             case 1:
-                // gérer une session
+                
                 listFormations = model.getListFormations();
                 vueAdmin.afficherFormations(listFormations);
 //                vueAdmin.faireUnChoixValide();
@@ -221,7 +221,6 @@ public class ControlerFormation implements ControlerUtils {
 
                 break;
             case 2:
-                // retour
                 ctrlAdmin.menuAdmin((Admin) controler.getUserConnecte());
                 break;
 
@@ -229,7 +228,7 @@ public class ControlerFormation implements ControlerUtils {
 
     }
 
-    private void gererSessionFormation(Formation form) {
+    public void gererSessionFormation(Formation form) {
         vueAdmin.gererSession();
         int choixSess = choixMenus(1, 6);
 

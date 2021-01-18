@@ -21,7 +21,7 @@ public class VueAdmin {
      * ***** Admin ******
      */
     public void menuAdmin() {
-       System.out.print("\033[H\033[2J");
+        System.out.print("\033[H\033[2J");
         System.out.flush();
         System.out.println("Faites un choix svp: " + "\n");
         System.out.println("1 -> Gérer les formations " + "\n");
@@ -230,13 +230,14 @@ public class VueAdmin {
             System.out.println("\n" + " Id de la session : " + session.getIdSession() + "\n" + " id du formateur  :  " + session.getFormateur().getIdUtilisateur() + "\n" + " Date du début de la formation : " + session.getDateDebut() + "\n" + " Date de fin : " + session.getDateFin() + "\n" + " Local : " + session.getLocal().getNomLocal() + "\n");
         });
     }
+
     public void afficherListSessionParFormation(List<Session> listSession) {
         listSession.forEach(session -> {
-            System.out.println("\n" + " Id de la session : " + session.getIdSession() 
+            System.out.println("\n" + " Id de la session : " + session.getIdSession()
                     + "\n" + " Nom du formateur  :  " + session.getFormateur().getNom()
-                    + "\n" + " Date du début de la formation : " + session.getDateDebut() 
-                    + "\n" + " Date de fin : " + session.getDateFin() 
-                    + "\n" + " Local : " + session.getLocal().getNomLocal() 
+                    + "\n" + " Date du début de la formation : " + session.getDateDebut()
+                    + "\n" + " Date de fin : " + session.getDateFin()
+                    + "\n" + " Local : " + session.getLocal().getNomLocal()
                     + "\n" + " Nombre de place disponible : ");
         });
     }
@@ -308,26 +309,34 @@ public class VueAdmin {
     }
 
     public void listFormationVide() {
-        System.out.println("\n" +" Vous donner cours à toutes les formations "+ "\n");
+        System.out.println("\n" + " Vous donner cours à toutes les formations " + "\n");
     }
 
     public void deleteFormationDuFormateur() {
-        System.out.println("\n" +" Effacer une formation d'un formateur "+ "\n");
+        System.out.println("\n" + " Effacer une formation d'un formateur " + "\n");
     }
 
     public void listFormationVidePourFormateur() {
-        System.out.println("\n" +" Le formateur n'est affecter à aucune formation "+ "\n");
+        System.out.println("\n" + " Le formateur n'est affecter à aucune formation " + "\n");
     }
 
     public void choixDeLaFormation() {
-        System.out.println("\n" +" Choisissez la formation a effacé "+ "\n");
+        System.out.println("\n" + " Choisissez la formation a effacé " + "\n");
     }
 
     public void formationDelete() {
-            System.out.println("\n" +" La formation a bien été effacé  "+ "\n");
+        System.out.println("\n" + " La formation a bien été effacé  " + "\n");
     }
 
     public void formationNoDelete() {
-        System.out.println("\n" +" La formation n'a pas été éffacé il y a encore une session qui existe !!!  "+ "\n");
+        System.out.println("\n" + " La formation n'a pas été éffacé il y a encore une session qui existe !!!  " + "\n");
+    }
+
+    public void aucunFormateur() {
+        System.out.println("\n" + " Il n'existe pas de formateur pour cette formation vous êtes redirigé vers le menus précédent !!!  " + "\n");
+    }
+
+    public void pasDeSession() {
+        System.out.println(" Il n'y a pas de session pour cette formation !!! ");
     }
 }

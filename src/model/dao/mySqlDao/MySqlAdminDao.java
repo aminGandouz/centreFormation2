@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import model.Formateur;
+import model.Formation;
 import model.Role;
 import model.dao.AdminDao;
 
@@ -209,5 +210,46 @@ public class MySqlAdminDao implements AdminDao {
             MySqlDaoFactory.closeStatement(ps);
             MySqlDaoFactory.closeConnection(c);
         }
+    }
+
+    @Override
+    public List<Formateur> getFormateurByFormation(Formation form) {
+        System.out.println(form);
+        List<Formateur> listFormateurs = new ArrayList<>();
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int IdRole = 3;
+        String sql = " select utilisateur.IdUtilisateur,Nom,Prenom,Adresse,Telephone,Email,Login,Password,IdRole,DenomRole,IdStatus,DenomStatus \n " +
+" from utilisateur \n " +
+" join roles on utilisateur.Role = roles.IdRole \n " +
+" join Status on utilisateur.Status = Status.IdStatus \n " +
+" join donner on utilisateur.IdUtilisateur = donner.IdUtilisateur \n " +
+" where utilisateur.Role = ? and donner.IdFormation = ? and utilisateur.IdUtilisateur not in (select session.IdFormateur from session where DATEDIFF(now(),DateFin) < ? )\n " +
+" group by utilisateur.IdUtilisateur ";
+        try {
+            c = MySqlDaoFactory.getInstance().getConnection();
+            ps = c.prepareStatement(sql);
+            ps.setInt(1, IdRole);
+            ps.setInt(2, form.getIdFormation());
+            ps.setInt(3, 0);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Formateur formateur = new Formateur(rs.getInt(1), rs.getString(2), rs.getString(3),
+                        rs.getString(4), rs.getString(5),
+                        rs.getString(6), rs.getString(7), rs.getString(8),
+                        new Role(rs.getInt(9), rs.getString(IdRole)));
+                listFormateurs.add(formateur);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Probleme avec la requete SQL getFormateurByFormation(Formation form) ");
+            e.printStackTrace();
+        } finally {
+            MySqlDaoFactory.closeResultSet(rs);
+            MySqlDaoFactory.closeStatement(ps);
+            MySqlDaoFactory.closeConnection(c);
+        }
+        return listFormateurs;
     }
 }

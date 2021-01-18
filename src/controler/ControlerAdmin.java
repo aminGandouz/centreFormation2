@@ -61,7 +61,7 @@ public class ControlerAdmin implements ControlerUtils {
                 break;
             case 6:
                 System.out.println("Sortir pour chaque formation la liste des sessions planifiées et le nombre de places encore disponibles");
-                displayAllSessionByFormation();
+                displayAllSessionByFormation(admin);
                 menuAdmin(admin);
                 //// !!!!!!!!!!!!!!!! A Finir  !!!!!!!!!!!!!!!! ///////
                 break;
@@ -270,14 +270,25 @@ public class ControlerAdmin implements ControlerUtils {
 
     }
 
-    private void displayAllSessionByFormation() {
+    private void displayAllSessionByFormation(Admin admin) {
+        Integer choixDeLaFormation = null;
         List<Formation> listForm = model.getCentre().getListFormations();
-        vueAdmin.displayAllSessionByFormation(listForm);
-        /////////// !!!!!!!!!!!!! gérer le compte du nbre de participants 
+        vueAdmin.afficherFormations(listForm);
+        vueAdmin.faireUnChoixValide();
+        if (s.hasNextInt()) {
+            choixDeLaFormation = s.nextInt();
+        }
+        List<Session> listSession = model.getCentre().getListSessionDispoByIdFormation(choixDeLaFormation);
+        if (null == listSession) {
+            vueAdmin.pasDeSession();
+        }
+        menuAdmin(admin);
 
+        /////////// !!!!!!!!!!!!! gérer le compte du nbre de participants 
     }
 
     private void ajoutFormationAuFormateur(Admin admin) {
+
         vueAdmin.ajouterFormationAuFormateur();
         List<Formateur> listFormateurs3 = model.getCentre().getListFormateurs();
         vueAdmin.afficherFormateurs(listFormateurs3);

@@ -20,5 +20,7 @@ public interface SessionDao {
 
     public List<Session> getListSessionByIdFormation(Integer idFormation);
 
+    public List<Session> getListSessionDispoByIdFormation(Integer choixDeLaFormation);
+
 }
     //public List<Session> getListFormationAvecNom(String nameSession);

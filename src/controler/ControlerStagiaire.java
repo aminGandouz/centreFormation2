@@ -38,8 +38,7 @@ public class ControlerStagiaire implements ControlerUtils {
                 System.out.println("annuler");
                 break;
             case 3:
-                System.out.println("signaler");
-                
+                System.out.println("signaler");               
                 break;
             case 4:
                 System.out.println("consulter");

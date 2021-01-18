@@ -9,6 +9,7 @@ import java.util.List;
 import model.Formation;
 import model.Local;
 import model.Role;
+import model.Session;
 import model.Status;
 import model.dao.CentreDao;
 
@@ -267,8 +268,8 @@ public class MySqlCentreDao implements CentreDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         String sqlSessionExist = " select idSession from session where session.IdFormation = ? and session.IdFormateur = ? and DATEDIFF(now(),DateFin) <= ? ";
-        String sql = "DELETE FROM `donner` WHERE IdUtilisateur = ? and IdFormation = ?  ";
-        Boolean erase = false;    
+        String sql = " DELETE FROM `donner` WHERE IdUtilisateur = ? and IdFormation = ?  ";
+        Boolean erase = false;
         try {
             c = MySqlDaoFactory.getInstance().getConnection();
             ps = c.prepareStatement(sqlSessionExist);
@@ -349,5 +350,34 @@ public class MySqlCentreDao implements CentreDao {
             MySqlDaoFactory.closeConnection(c);
         }
         return listFormation;
+    }
+
+    @Override
+    public List<Local> getLocauxDispo(Session session) {
+        List<Local> listLocaux = new ArrayList<>();
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String sql = " select IdLocal,DenomLocal from locaux \n " +
+" where IdLocal not in(select session.Local from session where DATEDIFF(now(),? ) < ?) ";
+        try {
+            c = MySqlDaoFactory.getInstance().getConnection();
+            ps = c.prepareStatement(sql);
+            ps.setDate(1, new java.sql.Date(session.getDateFin().getTime()));
+            ps.setInt(2, 0);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Local local = new Local(rs.getInt(1), rs.getString(2));
+                listLocaux.add(local);
+            }
+        } catch (SQLException e) {
+            System.out.println(" Problème avec la requete SQL getLocauxDispo(Session session) ");
+            e.printStackTrace();
+        } finally {
+            MySqlDaoFactory.closeResultSet(rs);
+            MySqlDaoFactory.closeStatement(ps);
+            MySqlDaoFactory.closeConnection(c);
+        }
+        return listLocaux;
     }
 }
