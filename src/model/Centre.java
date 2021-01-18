@@ -75,8 +75,6 @@ public class Centre {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         CentreDao centreDao = factory.createCentreDao();
         listFormations = centreDao.getListFormation();
-//        FormationDao formationDao = factory.createFormationDao();
-//        listFormation = formationDao.getListFormation();
         return listFormations;
     }
 

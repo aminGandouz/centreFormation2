@@ -39,20 +39,16 @@ public class MySqlSessionDao implements SessionDao {
         if (f == null) {
             return null;
         }
-        String sql3 = " select s.IdSession,\n "
-                + " s.IdFormateur,u.Nom,u.Prenom,u.Adresse,u.Telephone,u.Email,u.Login,u.Password,ro.IdRole,ro.DenomRole,\n "
-                + " st.IdStatus,st.DenomStatus,s.DateDebut,s.DateFin,lo.IdLocal,lo.DenomLocal \n "
-                + " from session as s,formation as f,locaux as lo,utilisateur as u,roles as ro,status as st \n "
-                + " where s.IdFormation = f.IdFormation\n "
-                + " and s.IdFormateur = u.IdUtilisateur\n "
-                + " and s.Local = lo.IdLocal\n "
-                + " and u.Role = ro.IdRole \n "
-                + " and u.Status = st.IdStatus \n "
-                + " and f.Intitule LIKE ? ";
+        String sql3 = " select s.IdSession,s.IdFormateur,u.Nom,u.Prenom,u.Adresse,u.Telephone,u.Email,u.Login,u.Password,ro.IdRole,ro.DenomRole,\n " +
+" st.IdStatus,st.DenomStatus,s.DateDebut,s.DateFin,lo.IdLocal,lo.DenomLocal \n " +
+" from session as s,formation as f,locaux as lo,utilisateur as u,roles as ro,status as st,donner as d\n " +
+" where s.IdFormation = f.IdFormation and s.IdFormateur = u.IdUtilisateur\n " +
+" and s.Local = lo.IdLocal and u.Role = ro.IdRole and u.Status = st.IdStatus and d.IdFormation = s.IdFormation  and ro.IdRole = ? and u.Nom = ? group by s.IdSession ";
         try {
             c = MySqlDaoFactory.getInstance().getConnection();
             ps = c.prepareStatement(sql3);
-            ps.setInt(1, f.getIdFormation());
+            ps.setInt(1, 3);
+            ps.setString(2, formationName);
             rs = ps.executeQuery();
             while (rs.next()) {
                 Session session = new Session(rs.getInt(1),

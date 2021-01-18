@@ -6,6 +6,10 @@ import model.Session;
 
 public class VueFormateur {
 
+    public static void FormateurNotExist() {
+        System.out.println("\n" + "Le formateur n'existe pas " + "\n");
+    }
+
     public void menuFormateur() {
         System.out.println("\n" + " Faites votre chois : " + "\n");
         System.out.println("\n" + " 1 -> Afficher la liste de mes formations " + "\n");
@@ -17,18 +21,16 @@ public class VueFormateur {
             System.out.println("Vous ne donnez pas cours pour le moment ");
         } else {
             for (Session session : listInscription) {
-                System.out.println("\n" +"Formation numéros : "+ session.getIdSession()
-                        //+ "\n" +"Intitulé de la formation : " +session.getFormation().getIntitule()
-                        + "\n" + "Nom du formateur : "+session.getFormateur().getNom() 
-                        + "\n" + "Date du début de votre formation : " +session.getDateDebut()
-                        + "\n" + "Date de la fin de votre formation : "+session.getDateFin() 
-                        + "\n" + "Nom du local de votre formation : "+session.getLocal().getNomLocal());
+                System.out.println("\n" + "Formation numéros : " + session.getIdSession()
+                        + "\n" + "Nom du formateur : " + session.getFormateur().getNom()
+                        + "\n" + "Date du début de votre formation : " + session.getDateDebut()
+                        + "\n" + "Date de la fin de votre formation : " + session.getDateFin()
+                        + "\n" + "Nom du local de votre formation : " + session.getLocal().getNomLocal());
             }
         }
 
     }
-    
-    
+
     public void erreur() {
         System.out.println("Erreur! Veuillez faire un choix valable : " + "\n");
         System.out.println("" + "\n");
@@ -39,11 +41,11 @@ public class VueFormateur {
             System.out.println("Il n'y a pas de formateur ");
         } else {
             for (Formateur formateur : listFormateur) {
-                System.out.println("\n" +" Formateur  ID : "+ formateur.getIdUtilisateur()
-                        + "\n" +" Nom du formateur : : " +formateur.getNom()
-                        + "\n" + " Prénom du formateur : "+formateur.getPrenom()
-                        + "\n" + " Rôle du formateur : " +formateur.getRole()
-                        + "\n" );
+                System.out.println("\n" + " Formateur  ID : " + formateur.getIdUtilisateur()
+                        + "\n" + " Nom du formateur : : " + formateur.getNom()
+                        + "\n" + " Prénom du formateur : " + formateur.getPrenom()
+                        + "\n" + " Rôle du formateur : " + formateur.getRole()
+                        + "\n");
             }
         }
     }

@@ -1,7 +1,6 @@
 package model.dao;
 
 import java.util.List;
-import model.Formateur;
 import model.Formation;
 import model.Local;
 import model.Status;

@@ -153,5 +153,5 @@ public class Formation {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         SessionDao sessionDao = factory.createSessionDao();
         return sessionDao.getListSessionByNameFormation(nameFormation);
-    }
+    }    
 }

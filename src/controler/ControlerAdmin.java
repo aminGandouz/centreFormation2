@@ -9,7 +9,9 @@ import model.Admin;
 import model.Formateur;
 import model.Formation;
 import model.Session;
+import org.mindrot.jbcrypt.BCrypt;
 import vue.VueAdmin;
+import vue.VueFormateur;
 import vue.VueLogin;
 
 public class ControlerAdmin implements ControlerUtils {
@@ -110,7 +112,6 @@ public class ControlerAdmin implements ControlerUtils {
     }
 
     private void ajoutFormateur() {
-
         s.nextLine();
         Formateur formateur = new Formateur();
 
@@ -156,25 +157,24 @@ public class ControlerAdmin implements ControlerUtils {
             vueLogin.entrerPassword();
             password = s.nextLine();
         } while (password == null || password.trim().isEmpty());
-        formateur.setPassword(password);
+        String hp = BCrypt.hashpw(password, BCrypt.gensalt());
+        formateur.setPassword(hp);
         formateur.ajoutFormateur();
     }
 
     private void effacerFormateur() {
         vueAdmin.effacerFormateur();
-        Formateur f = null;
         String formateur = null;
         s.nextLine();
-
         do {
             formateur = s.nextLine();
         } while (formateur == null || formateur.trim().isEmpty());
         Boolean formateurExist = model.getCentre().isFormateurExist(formateur);
         if (!formateurExist) {
-            System.out.println("Le formateur n'existe pas ");
+            VueFormateur.FormateurNotExist();
             effacerFormateur();
         } else {
-            f.effacerFormateur();
+          model.getFormateur().deleteFormateurByName(formateur);
         }
     }
 
@@ -235,7 +235,8 @@ public class ControlerAdmin implements ControlerUtils {
                 vueLogin.entrerPassword();
                 password = s.nextLine();
             } while (password == null || password.trim().isEmpty());
-            formateur.setPassword(password);
+            String hp = BCrypt.hashpw(password, BCrypt.gensalt());
+            formateur.setPassword(hp);
             formateur.updateFormateur();
         }
     }
@@ -248,13 +249,15 @@ public class ControlerAdmin implements ControlerUtils {
         vueAdmin.erreur();
     }
 
-    private void CommuniquerFormateurPrestations() {
+    private void CommuniquerFormateurPrestations() {        
         s.nextLine();
         String nomFormateur;
         List<Session> listSessionFormateur = new ArrayList<>();
-        vueAdmin.entrerNom();
-        // do {               
-        nomFormateur = s.nextLine();
+          do {
+                vueAdmin.entrerNom();
+                nomFormateur = s.nextLine();
+            } while (nomFormateur == null || nomFormateur.trim().isEmpty());       
+        // do {                      
         listSessionFormateur = model.getCentre().getListSessionByNameFormateur(nomFormateur);
 //                    s.nextLine();
 //                    if(listSessionFormateur.isEmpty()){

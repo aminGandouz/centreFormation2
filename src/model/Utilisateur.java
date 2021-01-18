@@ -112,11 +112,16 @@ public abstract class Utilisateur {
     public void setRole(Role role) {
         this.role = role;
     }
-    
+
     public static Utilisateur authentification(String login, String password) {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         UtilisateurDao utilisateurDao = factory.createUtilisateurDao();
         return utilisateurDao.getAuthentification(login, password);
     }
 
+    public static Utilisateur authentificationLogin(String loginString) {
+        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
+        UtilisateurDao utilisateurDao = factory.createUtilisateurDao();
+        return utilisateurDao.authentificationLogin(loginString);
+    }
 }

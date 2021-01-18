@@ -33,5 +33,11 @@ public class Formateur extends Utilisateur {
         AdminDao adminDao = factory.createAdminDao();
         adminDao.updateFormateur(this);
     }
+
+    public void deleteFormateurByName(String formateur) {
+        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
+        AdminDao adminDao = factory.createAdminDao();
+        adminDao.deleteFormateurByName(formateur);
+    }
     
 }

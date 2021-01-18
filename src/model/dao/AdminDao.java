@@ -11,10 +11,14 @@ public interface AdminDao {
 
     public void updateFormateur(Formateur formateur);
     
+    public void deleteFormateurByName(String formateur);
+    
     /////********* A déplacé *******///////// 
 
     public List<Formateur> getListFormateurs();
 
     public Formateur getFormateurByName(String nomFormateur);
+
+    
 
 }

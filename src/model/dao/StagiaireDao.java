@@ -13,5 +13,4 @@ public interface StagiaireDao {
     public List<Inscription> getListDesInscriptions(Stagiaire stagiaire);
 
 }
-
-//adresse, String telephone, String email, String login, String password, String role, String status);
+    

@@ -31,7 +31,8 @@ public class MySqlAdminDao implements AdminDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         Integer idRoleFormateur = 3;
-        String sql = "insert into utilisateur(Nom,Prenom,Adresse,Telephone,Email,Login,Password,Role,Enable) values(?,?,?,?,?,?,?,?)";
+        Integer idStatus = 3;
+        String sql = " insert into utilisateur(Nom,Prenom,Adresse,Telephone,Email,Login,Password,Role,Status,Enable) values(?,?,?,?,?,?,?,?,?,?)";
         try {
             c = MySqlDaoFactory.getInstance().getConnection();
             ps = c.prepareStatement(sql);
@@ -43,9 +44,9 @@ public class MySqlAdminDao implements AdminDao {
             ps.setString(6, formateur.getLogin());
             ps.setString(7, formateur.getPassword());
             ps.setInt(8, idRoleFormateur);
-            ps.setBoolean(9, true);
+            ps.setInt(9, idStatus);
+            ps.setInt(10, 1);
             ps.executeUpdate();
-
         } catch (SQLException e) {
             System.out.println("Probleme avec la requete SQL  ajoutFormateur(Formateur formateur) ");
             e.printStackTrace();
@@ -186,5 +187,27 @@ public class MySqlAdminDao implements AdminDao {
             MySqlDaoFactory.closeConnection(c);
         }
     }
-}
 
+    @Override
+    public void deleteFormateurByName(String formateur) {
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String sql = "update `Utilisateur` set Enable = ? WHERE `nom` = ? and role = ? ";
+        try {
+            c = MySqlDaoFactory.getInstance().getConnection();
+            ps = c.prepareStatement(sql);
+            ps.setBoolean(1, false);
+            ps.setString(2, formateur);
+            ps.setInt(3, 3);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Probleme avec la requete SQL deleteFormateurByName(String formateur)");
+            e.printStackTrace();
+        } finally {
+            MySqlDaoFactory.closeResultSet(rs);
+            MySqlDaoFactory.closeStatement(ps);
+            MySqlDaoFactory.closeConnection(c);
+        }
+    }
+}

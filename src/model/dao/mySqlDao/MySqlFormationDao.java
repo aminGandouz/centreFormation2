@@ -63,7 +63,7 @@ public class MySqlFormationDao implements FormationDao {
         Connection c = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String sql = "INSERT INTO `formation` (`Intitule`, `Prix`, `Duree`, `MaxParticipant`,`NbreParticipantMin`) values(?,?,?,?,?)";
+        String sql = "INSERT INTO `formation` (`Intitule`, `Prix`, `Duree`, `MaxParticipant`,`NbreParticipantMin`,`enable`) values(?,?,?,?,?,?)";
 
         try {
             c = MySqlDaoFactory.getInstance().getConnection();
@@ -73,6 +73,7 @@ public class MySqlFormationDao implements FormationDao {
             ps.setInt(3, f.getDuree());
             ps.setInt(4, f.getMaxParticipant());
             ps.setInt(5, f.getNbreParticipantMin());
+            ps.setInt(6, 1);
             ps.executeUpdate();
 
         } catch (SQLException e) {
@@ -115,7 +116,6 @@ public class MySqlFormationDao implements FormationDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         String sql = " SELECT `IdFormation`, `Intitule`, `Prix`, `Duree`, `MaxParticipant`, `NbreParticipantMin`, `enable` FROM `formation` WHERE Intitule LIKE ? ";
-
         try {
             c = MySqlDaoFactory.getInstance().getConnection();
             ps = c.prepareStatement(sql);

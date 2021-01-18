@@ -3,7 +3,6 @@ package controler;
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +27,7 @@ public class ControlerSession implements ControlerUtils {
     public void erreur() {
         ///// 
     }
+    
     ////// !!!!!!!!!!!!!! problème avec addSession Date Date Date Calendar Calendar Calendar
     public void addSession(Formation form) {
         formation = model.getCentre().getFormationById(form.getIdFormation());

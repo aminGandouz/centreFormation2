@@ -30,13 +30,12 @@ public class VueAdmin {
         System.out.println("4 -> Rechercher le formateur d’une session" + "\n");
         System.out.println("5 -> Communiquer à chaque formateur les prestations qu’il doit assurer (jour, local, formation)" + "\n");
         System.out.println("6 -> Sortir pour chaque formation la liste des sessions planifiées et le nombre de places encore disponibles " + "\n");
-        System.out.println("7 -> Retour " + "\n");
+        System.out.println("7 -> Déconnexion " + "\n");
     }
 
     public void erreur() {
         System.out.println("Erreur! Veuillez faire un choix valide svp  " + "\n");
         System.out.println("" + "\n");
-        //menuAdmin();
     }
 
     /**
@@ -50,7 +49,7 @@ public class VueAdmin {
         System.out.println("\n" + "1 -> Créer une formation " + "\n");
         System.out.println("\n" + "2 -> Annuler une formation " + "\n");
         System.out.println("\n" + "3 -> Update une formation " + "\n");
-        System.out.println("\n" + "4 -> Afficher une formation " + "\n");
+        System.out.println("\n" + "4 -> Afficher les formations " + "\n");
         System.out.println("\n" + "5 -> Retour" + "\n");
     }
 
@@ -105,7 +104,7 @@ public class VueAdmin {
     }
 
     public void deleteDone(String formation) {
-        System.out.println("\n" + "La formation " + formation + " n'existe pas  " + "\n");
+        System.out.println("\n" + "La formation " + formation + " n'existe plus  " + "\n");
     }
 
     public void entrerIdFormation() {
@@ -122,9 +121,9 @@ public class VueAdmin {
         System.out.println("\n" + "1 -> Créer un formateur " + "\n");
         System.out.println("\n" + "2 -> Effacer un formateur " + "\n");
         System.out.println("\n" + "3 -> Update un formateur " + "\n");
-        System.out.println("\n" + "4 -> Afficher un formateur " + "\n");
-        System.out.println("\n" + "5 -> Ajouter une formation a un formateur " + "\n");
-        System.out.println("\n" + "6 -> Supprimer une formation a un formateur" + "\n");
+        System.out.println("\n" + "4 -> Afficher les formateurs " + "\n");
+        System.out.println("\n" + "5 -> Ajouter une formation à un formateur " + "\n");
+        System.out.println("\n" + "6 -> Supprimer une formation d'un formateur" + "\n");
         System.out.println("\n" + "7 -> Retour" + "\n");
     }
 
@@ -183,7 +182,7 @@ public class VueAdmin {
             System.out.println("\n" + " Id de la session : " + session.getIdSession() + "\n" + "\n" + " id du formateur  :  " + session.getFormateur().getIdUtilisateur() + "\n" + " Date du début de la formation : " + session.getDateDebut() + "\n" + " Date de fin : " + session.getDateFin() + "\n" + " Local : " + session.getLocal().getNomLocal() + "\n");
         });
     }
-    //+ " Id de la formation  :  " + session.getFormation().getIdFormation() +
+
     public void formateurInconnu(String formateur) {
         System.out.println("\n" + " Le formateur " + formateur + " n'existe pas ou il ne donne aucun cours " + "\n");
         System.out.println("\n" + " Vueillez taper de nouveau le nom du formateur ou revenir a la page précédente " + "\n");
@@ -228,10 +227,9 @@ public class VueAdmin {
 
     public void afficherListSession(List<Session> listSession) {
         listSession.forEach(session -> {
-            System.out.println("\n" + " Id de la session : " + session.getIdSession() + "\n" + " Id de la formation  :  "  + "\n" + " id du formateur  :  " + session.getFormateur().getIdUtilisateur() + "\n" + " Date du début de la formation : " + session.getDateDebut() + "\n" + " Date de fin : " + session.getDateFin() + "\n" + " Local : " + session.getLocal().getNomLocal() + "\n");
+            System.out.println("\n" + " Id de la session : " + session.getIdSession() + "\n" + " id du formateur  :  " + session.getFormateur().getIdUtilisateur() + "\n" + " Date du début de la formation : " + session.getDateDebut() + "\n" + " Date de fin : " + session.getDateFin() + "\n" + " Local : " + session.getLocal().getNomLocal() + "\n");
         });
     }
-    //+ session.getFormation().getIdFormation()
     public void afficherListSessionParFormation(List<Session> listSession) {
         listSession.forEach(session -> {
             System.out.println("\n" + " Id de la session : " + session.getIdSession() 
@@ -250,8 +248,6 @@ public class VueAdmin {
     public void afficherSession(Session session) {
 
         System.out.println(" Id de la session : " + session.getIdSession()
-//                + "\n" + " Nom de la formation  :  "
-//                + session.getFormation().getIntitule()
                 + "\n" + " Nom du formateur  :  "
                 + session.getFormateur().getNom()
                 + "\n" + " Date du début de la formation : "
@@ -268,10 +264,9 @@ public class VueAdmin {
     }
 
     public void entrerDateDebut() {
-        System.out.println("\n" + "Enter une date valide sous le format (dd/mm/yyyy) " + "\n");
+        System.out.println("\n" + "Enter une date valide sous le format (dd-mm-yyyy) " + "\n");
     }
 
-    ///// possible de la retirer a voir !!!!!!!!!!!!! 
     public void entrerDateFin() {
         System.out.println("\n" + " Enter une date valide sous le format (dd/mm/yyyy) " + "\n");
     }

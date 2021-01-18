@@ -58,16 +58,16 @@ public class Stagiaire extends Utilisateur {
         this.estPaye = estPaye;
     }
 
-    public static void ajoutStagiaire(Stagiaire stagiaire) {
+    public void ajoutStagiaire() {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         StagiaireDao stagiaireDao = factory.createStagiaireDao();
-        stagiaireDao.addStagiaire(stagiaire);
+        stagiaireDao.addStagiaire(this);
     }
 
-    public static void updateStagiaire(Stagiaire stagiaire) {
+    public void updateStagiaire() {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         StagiaireDao stagiaireDao = factory.createStagiaireDao();
-        stagiaireDao.updateStagiaire(stagiaire);
+        stagiaireDao.updateStagiaire(this);
     }
 
     public List<Inscription> getListDesInscriptions() {
@@ -81,5 +81,11 @@ public class Stagiaire extends Utilisateur {
         UtilisateurDao utilisateurDao = factory.createUtilisateurDao();
         return utilisateurDao.getListFormationAvecNom(nomFormation);
     }
+
+    @Override
+    public String toString() {
+        return "Stagiaire{" + "status=" + status + ", estLoge=" + estLoge + ", estPaye=" + estPaye + ", listInscription=" + listInscription + '}';
+    }
+    
 
 }

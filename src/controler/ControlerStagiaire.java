@@ -12,6 +12,7 @@ import model.Inscription;
 import model.Session;
 import model.Stagiaire;
 import model.Status;
+import org.mindrot.jbcrypt.BCrypt;
 import vue.Accueil;
 import vue.VueLogin;
 import vue.VueStagiaire;
@@ -55,7 +56,8 @@ public class ControlerStagiaire implements ControlerUtils {
                 break;
             case 5:
                 if (controler.getUserConnecte() instanceof Stagiaire) {
-                    ctrlStagiaire.updateStagiaire(stagiaire);
+                    Stagiaire stagiaire2 = (Stagiaire)controler.getUserConnecte();
+                    ctrlStagiaire.updateStagiaire(stagiaire2);
                     menusStagiaire(stagiaire);
                 }
                 break;
@@ -140,16 +142,16 @@ public class ControlerStagiaire implements ControlerUtils {
             vueLogin.entrerPassword();
             password = s.nextLine();
         } while (password == null || password.trim().isEmpty());
-        stagiaire.setPassword(password);
+        String hp = BCrypt.hashpw(password, BCrypt.gensalt());
+        stagiaire.setPassword(hp);
 
         int idStatus = getStatusId();
         Status status = new Status();
         status.setIdStatus(idStatus);
         stagiaire.setStatus(status);
-        Stagiaire.ajoutStagiaire(stagiaire);
+        stagiaire.ajoutStagiaire();
         controler.start();
     }
-    // (!s.hasNextInt());// gerer le fait de mettre une lettre
 
     public void updateStagiaire(Stagiaire stagiaire2) {
         vueLogin.entrerCoordonnee();
@@ -191,15 +193,14 @@ public class ControlerStagiaire implements ControlerUtils {
             vueLogin.entrerPassword();
             password = s.nextLine();
         } while (password == null || password.trim().isEmpty());
-        stagiaire2.setPassword(password);
+        String hp = BCrypt.hashpw(password, BCrypt.gensalt());
+        stagiaire2.setPassword(hp);
 
         int idStatus = getStatusId();
         Status status = new Status();
         status.setIdStatus(idStatus);
         stagiaire2.setStatus(status);
-//        int idUtilisateur = controler.getUserConnecte().getIdUtilisateur();
-//        stagiaire.setIdUtilisateur(idUtilisateur);
-        Stagiaire.updateStagiaire(stagiaire2);
+        stagiaire2.updateStagiaire();
     }
 
     public int getStatusId() {

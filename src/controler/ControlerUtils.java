@@ -16,7 +16,7 @@ public interface ControlerUtils {
     public Controler controler = new Controler();
     public ControlerFormateur ctrlFormateur = new ControlerFormateur();
 
-    default int choixMenus(int min, int max) {// gerer si on met autre chose qu'un int
+    default int choixMenus(int min, int max) {
         int choixDuMenus = s.nextInt();
         while (choixDuMenus < min || choixDuMenus > max) {
             this.erreur();
@@ -27,7 +27,7 @@ public interface ControlerUtils {
 
     public void erreur();
 
-    default int choixMenus2(int min, int max) {// gerer si on met des espaces 
+    default int choixMenus2(int min, int max) {
         int choixDuMenus = 0;       
         do {
             if (s.hasNextInt()) {

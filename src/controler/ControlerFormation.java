@@ -104,7 +104,7 @@ public class ControlerFormation implements ControlerUtils {
             nbreParticipantMinString = s.nextLine();
         } while (!nbreParticipantMinString.matches("\\d+") || Integer.parseInt(nbreParticipantMinString) <= 0);
         nbreParticipantMin = Integer.parseInt(nbreParticipantMinString);
-        f.setMaxParticipant(maxParticipant);
+        f.setNbreParticipantMin(nbreParticipantMin);
         f.ajoutFormation();
     }
 
@@ -114,9 +114,9 @@ public class ControlerFormation implements ControlerUtils {
         do {
             formation = s.nextLine();
         } while (formation == null || formation.trim().isEmpty());
-        Formation f = new Formation();
-        f = f.getFormationAvecNom(formation);
-        if (f == null) {
+        Formation form = null;
+        form = model.getForm().getFormationAvecNom(formation);             
+        if (form == null) {
             vueAdmin.erreurFormation();
         } else {
             Formation.effacerFormation(formation);
@@ -133,7 +133,7 @@ public class ControlerFormation implements ControlerUtils {
         } while (intitule == null || intitule.trim().isEmpty());
         Formation form = model.getForm().getFormationAvecNom(intitule);
         if (form == null) {
-            //mettre un message d'erreur
+            /* TODO mettre un message d'erreur */
             ctrlFormation.gererFormation();
         } else {
             vueAdmin.afficherLaFormation(form);
@@ -167,7 +167,7 @@ public class ControlerFormation implements ControlerUtils {
                 nbreParticipantMinString = s.nextLine();
             } while (!nbreParticipantMinString.matches("\\d+") || Integer.parseInt(nbreParticipantMinString) <= 0);
             nbreParticipantMin = Integer.parseInt(nbreParticipantMinString);
-            form.setMaxParticipant(maxParticipant);
+            form.setMaxParticipant(nbreParticipantMin);
         }
         int idUtilisateur = controler.getUserConnecte().getIdUtilisateur();
         Formation.updateFormation(form.getIdFormation(), nom, prix, duree, maxParticipant, nbreParticipantMin);

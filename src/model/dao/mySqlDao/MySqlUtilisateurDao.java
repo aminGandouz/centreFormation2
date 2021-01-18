@@ -163,6 +163,42 @@ public class MySqlUtilisateurDao implements UtilisateurDao {
     public List<Inscription> getListFormationAvecNom(String nomFormation) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public Utilisateur authentificationLogin(String loginString) {
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Utilisateur user = null;
+        String sql = " select IdUtilisateur,Nom,Prenom,Adresse,Telephone,Email,Login,Password,IdRole,DenomRole,IdStatus,DenomStatus from utilisateur left join roles on utilisateur.Role = roles.IdRole \n "
+                + " left join Status on utilisateur.Status = Status.IdStatus WHERE utilisateur.Login = ? ";
+        try {
+            c = MySqlDaoFactory.getInstance().getConnection();
+            ps = c.prepareStatement(sql);
+            ps.setString(1, loginString);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                if (rs.getInt(9) == 1) {
+                    user = new Admin(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8),
+                            new Role(rs.getInt(9), rs.getString(10)));
+                } else if (rs.getInt(9) == 2) {
+                    user = new Stagiaire(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8),
+                            new Role(rs.getInt(9), rs.getString(10)),
+                            new Status(rs.getInt(11), rs.getString(12)));
+                } else if (rs.getInt(9) == 3) {
+                    user = new Formateur(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8),
+                            new Role(rs.getInt(9), rs.getString(10)));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Problème avec la requête SQL getAuthentification(String login, String password)");
+        } finally {
+            MySqlDaoFactory.closeResultSet(rs);
+            MySqlDaoFactory.closeStatement(ps);
+            MySqlDaoFactory.closeConnection(c);
+        }
+        return user;
+    }
 }
 
 //    static {

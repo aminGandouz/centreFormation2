@@ -53,7 +53,7 @@ public class VueStagiaire {
             System.out.println(" Id de la session : " + session.getIdSession() + "\n"  + "\n" + " id du formateur  :  " + session.getFormateur().getNom() + "\n" + " Date du début de la formation : " + session.getDateDebut() + "\n" + " Date de fin : " + session.getDateFin() + "\n" + " Local : " + session.getLocal().getNomLocal() + "\n");
         }
     }
-    //+ " Id de la formation  :  " + session.getFormation().getIntitule()
+
     public void inscriptionSession() {
         System.out.println("Vueillez rechercher une session : " + "\n");
     }
@@ -71,5 +71,3 @@ public class VueStagiaire {
     }
 
 }
-
-//     + " Id de la session  : " + inscription.getSession().getIdSession() + "\n"
