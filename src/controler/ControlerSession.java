@@ -32,35 +32,21 @@ public class ControlerSession implements ControlerUtils {
         formation = model.getCentre().getFormationById(form.getIdFormation());
         s.nextLine();
         String dateDeb = null;
-        String regex = "^(1[0-2]|0[1-9])-(3[01]|[12][0-9]|0[1-9])-[0-9]{4}$";
-        do {
             vueAdmin.entrerDateDebut();
             dateDeb = s.nextLine();
-        } while (!dateDeb.matches(regex));
         Date d = null;
         try {
             d = new SimpleDateFormat("dd-MM-yyyy").parse(dateDeb);
             //session.setDateDebut(sdf.parse(s.nextLine()));            
         } catch (ParseException ex) {
-            Logger.getLogger(ControlerSession.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(ControlerSession.class.getName()).log(Level.SEVERE, null, ex);
+            vueAdmin.problemeFormatDate();
+            addSession(form);
         }
         session.setDateDebut(d);
         session.setDateDebutFin(d, form.getDuree());
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.setTime(session.getDateDebut());
-//        calendar.add(Calendar.DAY_OF_MONTH, form.getDuree());
-//        String dateFin = new SimpleDateFormat("dd-MM-yyyy").format(calendar.getTime());
-//        try {
-//            session.setDateFin(new SimpleDateFormat("dd-MM-yyyy").parse(dateFin));
-//
-//        } catch (ParseException ex) {
-//            Logger.getLogger(ControlerSession.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-
-        //List<Formateur> listFormateur = model.getCentre().getAllFormateur();
-        List<Formateur> listFormateurDispo = model.getCentre().getFormateurByFormation(form);
+        List<Formateur> listFormateurDispo = model.getCentre().getFormateurByFormation(form,session);
         vueFormateur.afficheListFormateur(listFormateurDispo);
-        System.out.println(listFormateurDispo);
         if (listFormateurDispo.isEmpty()) {
             vueAdmin.aucunFormateur();
             ctrlFormation.gererSessionFormation(form);
@@ -107,3 +93,5 @@ public class ControlerSession implements ControlerUtils {
     }
 
 }
+/* and session.DateDebut not BETWEEN "01-01-2021" and " 21-03-2021" and session.DateFin not BETWEEN  "01-01-2021" and " 21-03-2021"
+ group by utilisateur.IdUtilisateur */

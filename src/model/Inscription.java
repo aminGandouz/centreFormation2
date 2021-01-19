@@ -5,28 +5,39 @@ import model.dao.InscriptionDao;
 
 public class Inscription {
 
-    /* TODO ajouter le prix */
-    private Stagiaire stagiaire;
+    private Integer idInscription;
     private Boolean estPaye;
     private Boolean signalisation;
-    // private Float prix;
+    private Float prix;
 
     public Inscription() {
     }
 
-    public Inscription(Stagiaire stagiaire, Boolean estPaye, Boolean signalisation) {
-        this.stagiaire = stagiaire;
+    public Inscription(Integer idInscription, Boolean estPaye, Boolean signalisation, Float prix) {
+        this.idInscription = idInscription;
         this.estPaye = estPaye;
         this.signalisation = signalisation;
+        this.prix = prix;
+    }  
+
+    public Integer getIdInscription() {
+        return idInscription;
     }
 
-    public Stagiaire getStagiaire() {
-        return stagiaire;
+    public void setIdInscription(Integer isInscription) {
+        this.idInscription = isInscription;
     }
 
-    public void setStagiaire(Stagiaire stagiaire) {
-        this.stagiaire = stagiaire;
+    public Float getPrix() {
+        return prix;
     }
+
+    public void setPrix(Float prix) {
+        this.prix = prix;
+    }
+
+
+
 
     public Boolean getEstPaye() {
         return estPaye;
@@ -44,9 +55,9 @@ public class Inscription {
         this.signalisation = signalisation;
     }
 
-    public void ajoutStagiaire(Integer idUtilisateur, Integer session) {
+    public Boolean ajoutStagiaire(Stagiaire stagiaire, Session session) {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         InscriptionDao inscriptionDao = factory.createInscriptionDao();
-        inscriptionDao.ajoutStagiaire(idUtilisateur, session);
+        return inscriptionDao.ajoutStagiaire(stagiaire,session);
     }
 }

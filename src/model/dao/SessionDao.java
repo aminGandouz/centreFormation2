@@ -1,6 +1,7 @@
 package model.dao;
 
 import java.util.List;
+import model.Inscription;
 import model.Session;
 
 public interface SessionDao {
@@ -21,6 +22,10 @@ public interface SessionDao {
     public List<Session> getListSessionByIdFormation(Integer idFormation);
 
     public List<Session> getListSessionDispoByIdFormation(Integer choixDeLaFormation);
+
+    public Session getListSessionByIdSession(Integer idSess);
+
+    public List<Inscription> getListInscription(Session aThis);
 
 }
     //public List<Session> getListFormationAvecNom(String nameSession);

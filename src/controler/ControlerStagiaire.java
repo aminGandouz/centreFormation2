@@ -31,14 +31,15 @@ public class ControlerStagiaire implements ControlerUtils {
         int choixDuMenus = choixMenus2(1, 6);
         switch (choixDuMenus) {
             case 1:
-                inscriptionSession();
+                inscriptionSession(stagiaire);
                 break;
 
             case 2:
                 System.out.println("annuler");
+                
                 break;
             case 3:
-                System.out.println("signaler");               
+                System.out.println("signaler");
                 break;
             case 4:
                 System.out.println("consulter");
@@ -54,7 +55,7 @@ public class ControlerStagiaire implements ControlerUtils {
                 break;
             case 5:
                 if (controler.getUserConnecte() instanceof Stagiaire) {
-                    Stagiaire stagiaire2 = (Stagiaire)controler.getUserConnecte();
+                    Stagiaire stagiaire2 = (Stagiaire) controler.getUserConnecte();
                     ctrlStagiaire.updateStagiaire(stagiaire2);
                     menusStagiaire(stagiaire);
                 }
@@ -83,24 +84,49 @@ public class ControlerStagiaire implements ControlerUtils {
         return choixDuMenus;
     }
 
-    private void inscriptionSession() {
+    private void inscriptionSession(Stagiaire stagiaire) {
         s.nextLine();
         List<Formation> listFormation = model.getCentre().getListFormations();
         vAccueil.afficheList(listFormation);
-        vueStagiaire.taperNomFormation();
-        String nameFormation = s.nextLine();// Ajouter une condition 
-        // formation 
-        List<Session> listSession = model.getCentre().getListSessionByName(nameFormation);
-        vueStagiaire.afficheListSession(listSession);
-        vueStagiaire.taperIdSession();
+        vueStagiaire.entrerIdFormation();
+        if (s.hasNextInt()) {
+            int idFormation = s.nextInt();
+            Formation f = model.getCentre().getFormationById(idFormation);
+            List<Session> listSession = model.getCentre().getListSessionByIdFormation(idFormation);
+            if (listSession.isEmpty()) {
+                vueStagiaire.pasDeSessionDispo();
+                inscriptionSession(stagiaire);
+            } else {
+                vueStagiaire.afficheListSession(listSession);
+                vueStagiaire.taperIdSession();
+                if (s.hasNextInt()) {
+                    Integer idSess = s.nextInt();
+                    Session sess = model.getSess().getSessionByIdSession(idSess);
+                    if (sess == null) {
+                        inscriptionSession(stagiaire);
+                    } else {
+                        if (f.getMaxParticipant() > sess.getListInscription().size()) {
+                            Boolean ajoutOK = model.getInscription().ajoutStagiaire(stagiaire, sess);
+                            if(ajoutOK){
+                                vueStagiaire.ajoutOK();
+                            }else{
+                                vueStagiaire.plusDePlaceDispo();
+                            }
+                            menusStagiaire(stagiaire);
+                        }else{
+                            vueStagiaire.plusDePlaceDispo();
+                            ctrlStagiaire.menusStagiaire(stagiaire);                       }
+                    }
 
-        Integer idsession = getSessionId(listSession);
-        // inscription dans session 
-        model.getInscription().ajoutStagiaire(stagiaire.getIdUtilisateur(), idsession);
-        menusStagiaire(stagiaire);
+                }
+
+            }
+        } else {
+            inscriptionSession(stagiaire);
+        }
+
     }
-    
-    
+
     public void inscription() {
         vAccueil.inscription();
         s.nextLine();

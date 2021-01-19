@@ -32,8 +32,7 @@ public interface ControlerUtils {
         do {
             if (s.hasNextInt()) {
                 choixDuMenus = s.nextInt();
-            }
-            
+            }            
             while (choixDuMenus < min || choixDuMenus > max) {
                 this.erreur();
                 s.nextLine();
@@ -43,7 +42,6 @@ public interface ControlerUtils {
             }           
             return choixDuMenus;           
         } while (!s.hasNextInt());
-
     }
 }
 

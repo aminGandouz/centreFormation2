@@ -115,7 +115,7 @@ public class ControlerFormation implements ControlerUtils {
             formation = s.nextLine();
         } while (formation == null || formation.trim().isEmpty());
         Formation form = null;
-        form = model.getForm().getFormationAvecNom(formation);             
+        form = model.getForm().getFormationAvecNom(formation);
         if (form == null) {
             vueAdmin.erreurFormation();
         } else {
@@ -184,19 +184,39 @@ public class ControlerFormation implements ControlerUtils {
     }
 
     public void rechercherSessionFormateur(Admin admin) {
-        vueAdmin.rechercherSessionFormateur();
-        List<Session> listSession = model.getForm().getListSession();
-        vueAdmin.afficherListSession(listSession);
-        vueAdmin.entrerIdSession();
-        // Set<Session> setSession = new HashSet<Session>(listSession);
-        int idSession = s.nextInt();
-        Session sess = new Session();
-        sess = model.getForm().getSessionByIdSession(idSession);
-        if (sess == null) {
-            vueAdmin.erreur();
-        } else {
-            vueAdmin.afficherSession(sess);
+        Formation f = new Formation();
+        vueAdmin.faireUnChoixValide();
+        List<Formation> listFormation = model.getCentre().getListFormations();
+        vueAdmin.afficherFormations(listFormation);
+        vueAdmin.entrerFormationId();
+        if (s.hasNextInt()) {
+            int idFormation = s.nextInt();
+            f = model.getCentre().getFormationById(idFormation);
+            if (f != null) {
+                vueAdmin.afficherLaFormation(f);
+                vueAdmin.rechercherSessionFormateur();
+                List<Session> listSession = model.getForm().getListSession();
+                vueAdmin.afficherListSession(listSession);
+                vueAdmin.entrerIdSession();
+                if (s.hasNextInt()) {
+                    int idSession = s.nextInt();
+                    Session sess = new Session();
+                    sess = model.getForm().getSessionByIdSession(idSession);
+                    if (sess == null) {
+                        vueAdmin.erreur();
+                    } else {
+                        vueAdmin.afficherSession(sess);
+                    }
+                } else {
+                    vueAdmin.erreurFormation();
+                    rechercherSessionFormateur(admin);
+                }
+            } else {
+                vueAdmin.erreurFormation();
+                rechercherSessionFormateur(admin);
+            }
         }
+
     }
 
     public void gererSession() {
@@ -205,7 +225,7 @@ public class ControlerFormation implements ControlerUtils {
 
         switch (choix) {
             case 1:
-                
+
                 listFormations = model.getListFormations();
                 vueAdmin.afficherFormations(listFormations);
 //                vueAdmin.faireUnChoixValide();
@@ -266,6 +286,7 @@ public class ControlerFormation implements ControlerUtils {
     private void gererLaSession(List<Formation> listForma) {
         vueAdmin.faireUnChoixValide();
         Formation f = new Formation();
+        // gérer erreur 
         int idFormation = s.nextInt();
         f = model.getCentre().getFormationById(idFormation);
         // if (listForma.contains(model.getCentre().getFormationById(idFormation))) {// comme le LIKE
@@ -292,7 +313,7 @@ public class ControlerFormation implements ControlerUtils {
     private void readSessionForOneFormation(Formation form) {
         listSessionFormation = model.getCentre().getListSessionByIdFormation(form.getIdFormation());
         vueAdmin.afficherListSession(listSessionFormation);
-        
+
         vueAdmin.faireUnChoixValide();
         Session sess = new Session();
         int idSession = s.nextInt();

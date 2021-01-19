@@ -9,6 +9,7 @@ import java.util.List;
 import model.Formateur;
 import model.Formation;
 import model.Role;
+import model.Session;
 import model.dao.AdminDao;
 
 public class MySqlAdminDao implements AdminDao {
@@ -213,26 +214,28 @@ public class MySqlAdminDao implements AdminDao {
     }
 
     @Override
-    public List<Formateur> getFormateurByFormation(Formation form) {
-        System.out.println(form);
+    public List<Formateur> getFormateurByFormation(Formation form ,Session sess) {
         List<Formateur> listFormateurs = new ArrayList<>();
         Connection c = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         int IdRole = 3;
-        String sql = " select utilisateur.IdUtilisateur,Nom,Prenom,Adresse,Telephone,Email,Login,Password,IdRole,DenomRole,IdStatus,DenomStatus \n " +
+        String sql = " select distinct utilisateur.IdUtilisateur,Nom,Prenom,Adresse,Telephone,Email,Login,Password,IdRole,DenomRole,IdStatus,DenomStatus \n " +
 " from utilisateur \n " +
 " join roles on utilisateur.Role = roles.IdRole \n " +
 " join Status on utilisateur.Status = Status.IdStatus \n " +
-" join donner on utilisateur.IdUtilisateur = donner.IdUtilisateur \n " +
-" where utilisateur.Role = ? and donner.IdFormation = ? and utilisateur.IdUtilisateur not in (select session.IdFormateur from session where DATEDIFF(now(),DateFin) < ? )\n " +
-" group by utilisateur.IdUtilisateur ";
+" join donner on utilisateur.IdUtilisateur = donner.IdUtilisateur\n " +
+" join session on session.IdFormateur = utilisateur.IdUtilisateur\n " +
+" where donner.IdFormation = ? and utilisateur.IdUtilisateur not in (select session.IdFormateur from session where SESSION.DateDebut BETWEEN ? and ? and session.DateFin not BETWEEN  ? and ? \n " +
+" group by utilisateur.IdUtilisateur) ";
         try {
             c = MySqlDaoFactory.getInstance().getConnection();
             ps = c.prepareStatement(sql);
-            ps.setInt(1, IdRole);
-            ps.setInt(2, form.getIdFormation());
-            ps.setInt(3, 0);
+            ps.setInt(1, form.getIdFormation());
+            ps.setDate(2, new java.sql.Date(sess.getDateDebut().getTime()));
+            ps.setDate(3, new java.sql.Date(sess.getDateFin().getTime()));
+            ps.setDate(4, new java.sql.Date(sess.getDateDebut().getTime()));
+            ps.setDate(5, new java.sql.Date(sess.getDateFin().getTime()));
             rs = ps.executeQuery();
             while (rs.next()) {
                 Formateur formateur = new Formateur(rs.getInt(1), rs.getString(2), rs.getString(3),

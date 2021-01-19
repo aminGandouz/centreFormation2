@@ -39,7 +39,7 @@ public class Accueil {
 
     public void afficheList(List<Formation> listFormation) {
         for (Formation formation : listFormation) {
-            System.out.println("Intitulé : " + formation.getIntitule() + " Prix :  " + formation.getPrix() + " Durée :  " + formation.getDuree());
+            System.out.println(" Id de la formation : "+formation.getIdFormation()+" Intitulé : " + formation.getIntitule() + " Prix :  " + formation.getPrix() + " Durée :  " + formation.getDuree());
         }
     }
 

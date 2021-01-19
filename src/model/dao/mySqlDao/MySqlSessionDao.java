@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import model.Formateur;
 import model.Formation;
+import model.Inscription;
 import model.Local;
 import model.Role;
 import model.Session;
@@ -336,6 +337,41 @@ public class MySqlSessionDao implements SessionDao {
             MySqlDaoFactory.closeConnection(c);
         }
         return listSession;
+    }
+
+    @Override
+    public Session getListSessionByIdSession(Integer idSess) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<Inscription> getListInscription(Session sess) {
+        List<Inscription> listInscription = new ArrayList<>();
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String sql = " SELECT `IdInscription`, `EstPaye`, `Signalisation`, `prix` FROM `inscrire` \n " +
+" WHERE inscrire.IdSession = ? ";
+
+        try {
+            c = MySqlDaoFactory.getInstance().getConnection();
+            ps = c.prepareStatement(sql);
+            ps.setInt(1, sess.getIdSession());
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Inscription inscritpion = new Inscription(rs.getInt(1), rs.getBoolean(2), rs.getBoolean(3), rs.getFloat(4));
+                listInscription.add(inscritpion);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Probleme avec la requete SQL getListInscription(Session sess)");
+            e.printStackTrace();
+        } finally {
+            MySqlDaoFactory.closeResultSet(rs);
+            MySqlDaoFactory.closeStatement(ps);
+            MySqlDaoFactory.closeConnection(c);
+        }
+        return listInscription;
     }
 }
 

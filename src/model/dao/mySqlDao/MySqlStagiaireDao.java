@@ -14,20 +14,20 @@ import model.Utilisateur;
 import model.dao.StagiaireDao;
 
 public class MySqlStagiaireDao implements StagiaireDao {
-    
+
     private static MySqlStagiaireDao instance;
-    
+
     static {
         instance = new MySqlStagiaireDao();
     }
-    
+
     public static MySqlStagiaireDao getInstance() {
         return instance;
     }
-    
+
     private MySqlStagiaireDao() {
     }
-    
+
     @Override
     public void addStagiaire(Stagiaire stagiaire) {
         Connection c = null;
@@ -48,7 +48,7 @@ public class MySqlStagiaireDao implements StagiaireDao {
             ps.setInt(9, stagiaire.getStatus().getIdStatus());
             ps.setBoolean(10, true);
             ps.executeUpdate();
-            
+
         } catch (SQLException e) {
             System.out.println("Probleme avec la requete SQL addStagiaire(Stagiaire stagiaire)");
             e.printStackTrace();
@@ -57,9 +57,9 @@ public class MySqlStagiaireDao implements StagiaireDao {
             MySqlDaoFactory.closeStatement(ps);
             MySqlDaoFactory.closeConnection(c);
         }
-        
+
     }
-    
+
     @Override
     public void updateStagiaire(Stagiaire stagiaire) {
         Connection c = null;
@@ -98,22 +98,16 @@ public class MySqlStagiaireDao implements StagiaireDao {
         Connection c = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String sql = " select utilisateur.IdUtilisateur,Nom,Prenom,Adresse,Telephone,Email,Login,Password,IdRole,DenomRole\n "
-                + " ,IdStatus,DenomStatus,EstPaye,Signalisation \n "
-                + " from utilisateur left join roles on utilisateur.Role = roles.IdRole left join Status on utilisateur.Status = Status.IdStatus left join inscrire on inscrire.IdUtilisateur = utilisateur.IdUtilisateur where inscrire.IdUtilisateur = ? ";
-        
+        String sql = " SELECT `IdInscription`, `IdUtilisateur`, `IdSession`, `EstPaye`, `Signalisation`, `prix` FROM `inscrire` WHERE idUtilisateur = ? ";
+
         try {
             c = MySqlDaoFactory.getInstance().getConnection();
             ps = c.prepareStatement(sql);
             ps.setInt(1, stagiaire.getIdUtilisateur());
             rs = ps.executeQuery();
             while (rs.next()) {
-                Inscription inscription = new Inscription(
-                        new Stagiaire(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8),
-                                new Role(rs.getInt(9), rs.getString(10)), new Status(rs.getInt(11), rs.getString(12))),
-                        rs.getBoolean(13),
-                        rs.getBoolean(14));
-                listInscription.add(inscription);
+                Inscription inscritpion = new Inscription(rs.getInt(1), rs.getBoolean(2), rs.getBoolean(3), rs.getFloat(4));
+                listInscription.add(inscritpion);
             }
         } catch (SQLException e) {
             System.out.println("Probleme avec la requete SQL  getListDesInscriptions(Integer idUtilisateur)");

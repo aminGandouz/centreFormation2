@@ -191,10 +191,10 @@ public class Centre {
         return centreDao.getListFormationsByNameFormation(nomFormation);
     }
 
-    public List<Formateur> getFormateurByFormation(Formation form) {
+    public List<Formateur> getFormateurByFormation(Formation form,Session session) {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         AdminDao formateurDao = factory.createAdminDao();
-        return formateurDao.getFormateurByFormation(form);
+        return formateurDao.getFormateurByFormation(form,session);
     }
 
     public List<Local> getLocauxDispo(Session session) {
@@ -207,6 +207,12 @@ public class Centre {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         SessionDao sessionDao = factory.createSessionDao();
         return sessionDao.getListSessionDispoByIdFormation(choixDeLaFormation);
+    }
+
+    public Session getListSessionByIdSession(Integer idSess) {
+        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
+        SessionDao sessionDao = factory.createSessionDao();
+        return sessionDao.getListSessionByIdSession(idSess);
     }
 
 }

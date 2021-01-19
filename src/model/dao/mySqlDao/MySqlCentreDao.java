@@ -28,7 +28,6 @@ public class MySqlCentreDao implements CentreDao {
     private MySqlCentreDao() {
     }
 
-    /* TODO REMTTRE LA TABLE DONNER */
     public Status getStatusById(int idStatus) {
         Status status = null;
         Connection c = null;

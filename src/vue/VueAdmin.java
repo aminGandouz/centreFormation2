@@ -339,4 +339,12 @@ public class VueAdmin {
     public void pasDeSession() {
         System.out.println(" Il n'y a pas de session pour cette formation !!! ");
     }
+
+    public void entrerFormationId() {
+        System.out.println("\n" + " Entrez l'id de la formation choisit " + "\n");
+    }
+
+    public void problemeFormatDate() {
+        System.out.println("\n" + " Erreur format de la date " + "\n");
+    }
 }

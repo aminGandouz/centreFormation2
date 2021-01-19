@@ -3,6 +3,7 @@ package model.dao;
 import java.util.List;
 import model.Formateur;
 import model.Formation;
+import model.Session;
 
 public interface AdminDao {
 
@@ -14,7 +15,7 @@ public interface AdminDao {
 
     public void deleteFormateurByName(String formateur);
 
-    public List<Formateur> getFormateurByFormation(Formation form);
+    public List<Formateur> getFormateurByFormation(Formation form,Session session);
 
     /////********* A déplacé *******///////// 
     public List<Formateur> getListFormateurs();

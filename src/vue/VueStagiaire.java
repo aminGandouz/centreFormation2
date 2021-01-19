@@ -44,13 +44,13 @@ public class VueStagiaire {
 
     public void afficheList(List<Inscription> listInscription) {
         for (Inscription inscription : listInscription) {
-            System.out.println(" IdInscription : " + inscription.getStagiaire().getIdUtilisateur() + "\n"  + " Cotisation payé : " + inscription.getEstPaye() + "\n");
+            System.out.println(" IdInscription : " + inscription.getIdInscription() + "\n"  + " Cotisation payé : " + inscription.getEstPaye() + "\n");
         }
     }
 
     public void afficheListSession(List<Session> listSession) {
         for (Session session : listSession) {
-            System.out.println(" Id de la session : " + session.getIdSession() + "\n"  + "\n" + " id du formateur  :  " + session.getFormateur().getNom() + "\n" + " Date du début de la formation : " + session.getDateDebut() + "\n" + " Date de fin : " + session.getDateFin() + "\n" + " Local : " + session.getLocal().getNomLocal() + "\n");
+            System.out.println(" Id de la session : " + session.getIdSession() +"\n" + " id du formateur  :  " + session.getFormateur().getNom() + "\n" + " Date du début de la formation : " + session.getDateDebut() + "\n" + " Date de fin : " + session.getDateFin() + "\n" + " Local : " + session.getLocal().getNomLocal() + "\n");
         }
     }
 
@@ -59,15 +59,33 @@ public class VueStagiaire {
     }
 
     public void taperNomFormation() {
-        System.out.println("Entrer le nom de la formation : " + "\n");
+        System.out.println("\n" +"Entrer le nom de la formation : " + "\n");
     }
 
     public void taperIdSession() {
-        System.out.println("Introduire l'id de la session : " + "\n");
+        System.out.println("\n" +"Introduire l'id de la session : " + "\n");
     }
 
     public void notSubscribe() {
         System.out.println("\n" + "Vous n'êtes inscrit à aucune session !!!!!!! " + "\n");
     }
+
+    public void pasDeSessionDispo() {
+        System.out.println("\n" + " Il n'y a pas de session disponible pour cette formation " + "\n");
+    }
+
+    public void entrerIdFormation() {
+         System.out.println("\n" + " Entrez l'id de la formation " + "\n");
+    }
+
+    public void plusDePlaceDispo() {
+        System.out.println("\n" + " Il n'y a plus de place disponible pour cette session  " + "\n");
+    }
+
+    public void ajoutOK() {
+         System.out.println("\n" + " Vous êtes bien inscrit a la session choisit  " + "\n");
+    }
+
+ 
 
 }

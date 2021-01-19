@@ -88,6 +88,17 @@ public class Session {
         this.local = local;
     }
 
+    public List<Inscription> getListInscription() {
+        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
+        SessionDao sessionDao = factory.createSessionDao();
+        listInscription = sessionDao.getListInscription(this);
+        return listInscription;
+    }
+
+    public void setListInscription(List<Inscription> listInscription) {
+        this.listInscription = listInscription;
+    }
+
     public static void addSession(Session session, int idFormation) {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         SessionDao sessionDao = factory.createSessionDao();
