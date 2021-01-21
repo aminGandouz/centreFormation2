@@ -4,8 +4,6 @@ import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import model.Formateur;
 import model.Formation;
 import model.Local;
@@ -27,25 +25,22 @@ public class ControlerSession implements ControlerUtils {
         ///// 
     }
 
-    ////// !!!!!!!!!!!!!! problème avec addSession Date Date Date Calendar Calendar Calendar
     public void addSession(Formation form) {
         formation = model.getCentre().getFormationById(form.getIdFormation());
         s.nextLine();
         String dateDeb = null;
-            vueAdmin.entrerDateDebut();
-            dateDeb = s.nextLine();
+        vueAdmin.entrerDateDebut();
+        dateDeb = s.nextLine();
         Date d = null;
         try {
             d = new SimpleDateFormat("dd-MM-yyyy").parse(dateDeb);
-            //session.setDateDebut(sdf.parse(s.nextLine()));            
         } catch (ParseException ex) {
-            //Logger.getLogger(ControlerSession.class.getName()).log(Level.SEVERE, null, ex);
             vueAdmin.problemeFormatDate();
             addSession(form);
         }
         session.setDateDebut(d);
         session.setDateDebutFin(d, form.getDuree());
-        List<Formateur> listFormateurDispo = model.getCentre().getFormateurByFormation(form,session);
+        List<Formateur> listFormateurDispo = model.getCentre().getFormateurByFormation(form, session);
         vueFormateur.afficheListFormateur(listFormateurDispo);
         if (listFormateurDispo.isEmpty()) {
             vueAdmin.aucunFormateur();
@@ -78,7 +73,7 @@ public class ControlerSession implements ControlerUtils {
     }
 
     public void deleteSession(Formation form) {
-        List<Session> listSession = model.getForm().getListSessionByNameFormation(form.getIntitule());
+        List<Session> listSession = model.getCentre().getListSessionByIdFormation(form.getIdFormation());
         vueAdmin.afficherListSession(listSession);
         vueAdmin.faireUnChoixValide();
         int choixSession = s.nextInt();

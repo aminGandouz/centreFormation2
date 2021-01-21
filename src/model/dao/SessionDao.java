@@ -27,5 +27,11 @@ public interface SessionDao {
 
     public List<Inscription> getListInscription(Session aThis);
 
+    public List<String> getListInscriptionBySession(Session aThis);
+
+    public void editerSession(Session aThis);
+
+
+
 }
     //public List<Session> getListFormationAvecNom(String nameSession);

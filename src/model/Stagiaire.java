@@ -82,10 +82,32 @@ public class Stagiaire extends Utilisateur {
         return utilisateurDao.getListFormationAvecNom(nomFormation);
     }
 
-    @Override
     public String toString() {
-        return "Stagiaire{" + "status=" + status + ", estLoge=" + estLoge + ", estPaye=" + estPaye + ", listInscription=" + listInscription + '}';
+        return super.toString() + "Stagiaire{" + "status=" + status + ", estLoge=" + estLoge + ", estPaye=" + estPaye + ", listInscription=" + listInscription + '}';
     }
-    
+
+    public Inscription getInscritpionById(int choixInscription) {
+        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
+        StagiaireDao stagiaireDao = factory.createStagiaireDao();
+        return stagiaireDao.getInscritpionById(choixInscription);
+    }
+
+    public Boolean annulerInscription(Inscription inscription) {
+        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
+        StagiaireDao stagiaireDao = factory.createStagiaireDao();
+        return stagiaireDao.annulerInscription(inscription);
+    }
+
+    public List<Inscription> getListInscriptionNonPayer() {
+        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
+        StagiaireDao stagiaireDao = factory.createStagiaireDao();
+        return stagiaireDao.getListInscriptionNonPayer(this);
+    }
+
+    public Boolean signalerPaiement(Inscription inscription) {
+        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
+        StagiaireDao stagiaireDao = factory.createStagiaireDao();
+        return stagiaireDao.signalerPaiement(inscription);
+    }
 
 }

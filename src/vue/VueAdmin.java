@@ -3,6 +3,7 @@ package vue;
 import java.util.List;
 import model.Formateur;
 import model.Formation;
+import model.Inscription;
 import model.Local;
 import model.Session;
 
@@ -29,8 +30,10 @@ public class VueAdmin {
         System.out.println("3 -> Gérer les formateurs" + "\n");
         System.out.println("4 -> Rechercher le formateur d’une session" + "\n");
         System.out.println("5 -> Communiquer à chaque formateur les prestations qu’il doit assurer (jour, local, formation)" + "\n");
-        System.out.println("6 -> Sortir pour chaque formation la liste des sessions planifiées et le nombre de places encore disponibles " + "\n");
-        System.out.println("7 -> Déconnexion " + "\n");
+        System.out.println("6 -> Ajout d'un nouveau status " + "\n");
+        System.out.println("7 -> Ajout d'un nouveau local " + "\n");
+        System.out.println("8 -> Gérer les paiements d'inscription " + "\n");
+        System.out.println("9 -> Déconnexion " + "\n");
     }
 
     public void erreur() {
@@ -221,13 +224,16 @@ public class VueAdmin {
         System.out.println("\n" + " 2 -> Effacer une session de la formation  " + "\n");
         System.out.println("\n" + " 3 -> Editer une session d'une formation  " + "\n");
         System.out.println("\n" + " 4 -> Afficher les sessions de la formation  " + "\n");
-        System.out.println("\n" + " 5 -> Afficher une session de la formation  " + "\n");
-        System.out.println(" 6 -> Retour  " + "\n");
+        System.out.println("\n" + " 5 -> Afficher les stagiaires inscrit à une session   " + "\n");
+        System.out.println("\n" + " 6 -> Retour  " + "\n");
     }
 
     public void afficherListSession(List<Session> listSession) {
         listSession.forEach(session -> {
-            System.out.println("\n" + " Id de la session : " + session.getIdSession() + "\n" + " id du formateur  :  " + session.getFormateur().getIdUtilisateur() + "\n" + " Date du début de la formation : " + session.getDateDebut() + "\n" + " Date de fin : " + session.getDateFin() + "\n" + " Local : " + session.getLocal().getNomLocal() + "\n");
+            System.out.println("\n" + " Id de la session : " + session.getIdSession() + "\n" + " id du formateur  :  " + session.getFormateur().getIdUtilisateur() + "\n" + " Date du début de la formation : " + session.getDateDebut() + "\n" + " Date de fin : "
+                    + session.getDateFin() + "\n" + " Local : "
+                    + session.getLocal().getNomLocal() + "\n"
+                    + " Nombre de places disponible : " + session.getListInscription().size());
         });
     }
 
@@ -346,5 +352,63 @@ public class VueAdmin {
 
     public void problemeFormatDate() {
         System.out.println("\n" + " Erreur format de la date " + "\n");
+    }
+
+    public void statusEtudiants() {
+        System.out.println("\n" + " Gestion des status étudiant " + "\n");
+    }
+
+    public void entrerReductionStatus() {
+        System.out.println("\n" + " Entrez la réduction pour le status " + "\n");
+    }
+
+    public void ajoutStatusOk() {
+        System.out.println("\n" + " L'ajout du nouveau status a bien été effectué  " + "\n");
+    }
+
+    public void ajoutStatusNotOk() {
+        System.out.println("\n" + " L'ajout du status n'a pas été effectué  " + "\n");
+    }
+
+    public void print(Object o) {
+        System.out.println(o);
+    }
+
+    public void afficherListSessionAvecNbParticipant(List<Session> listSession, Formation form) {
+        listSession.forEach(session -> {
+            System.out.println("\n" + " Id de la session : " + session.getIdSession() + "\n" + " id du formateur  :  " + session.getFormateur().getIdUtilisateur() + "\n" + " Date du début de la formation : " + session.getDateDebut() + "\n" + " Date de fin : "
+                    + session.getDateFin() + "\n" + " Local : "
+                    + session.getLocal().getNomLocal() + "\n"
+                    + " Nombre de places disponible : " + (form.getMaxParticipant() - session.getListInscription().size()));
+        });
+    }
+
+    public void ajoutLocalOK() {
+        System.out.println("\n" + " L'ajout d'un nouveau local a bien été effectué  " + "\n");
+    }
+
+    public void ajoutLocalNotOk() {
+        System.out.println("\n" + " L'ajout d'un local n'a pas été effectué  " + "\n");
+    }
+
+    public void listDesInscriptions() {
+        System.out.println(" Voici la list des inscritpions : ");
+    }
+
+    public void listInscriptionVide() {
+        System.out.println(" La liste des inscriptions est vide , vous êtes redirigé vers le menu : ");
+    }
+
+    public void afficheList(List<Inscription> listInscription) {
+        for (Inscription inscription : listInscription) {
+            System.out.println(" IdInscription : " + inscription.getIdInscription() +
+                    "\n" + " EstPaye "+ inscription.getEstPaye() + 
+                    "\n" + " Signalisation" + inscription.getSignalisation() + 
+                    "\n" + " Prix "+inscription.getPrix() +"\n"  );
+        }
+    }
+
+    public void paiementOk() {
+        System.out.println("\n" + " Le paiment est bien effectué   " + "\n");
     }
 }

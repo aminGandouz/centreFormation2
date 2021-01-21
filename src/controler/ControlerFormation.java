@@ -1,14 +1,21 @@
 package controler;
 
 import static controler.ControlerUtils.controler;
+import static controler.ControlerUtils.ctrlFormation;
 import static controler.ControlerUtils.model;
 import static controler.ControlerUtils.s;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import model.Admin;
+import model.Formateur;
 import model.Formation;
+import model.Local;
 import model.Session;
 import vue.Accueil;
 import vue.VueAdmin;
+import vue.VueFormateur;
 import vue.VueLogin;
 import vue.VueStagiaire;
 
@@ -17,6 +24,7 @@ public class ControlerFormation implements ControlerUtils {
     private final Accueil vAccueil = new Accueil();
     private final VueAdmin vueAdmin = new VueAdmin();
     private final VueStagiaire vueStagiaire = new VueStagiaire();
+    private final VueFormateur vueFormateur = new VueFormateur();
     private final VueLogin vueLogin = new VueLogin();
     private List<Formation> listFormations;
     private List<Session> listSession;
@@ -264,18 +272,21 @@ public class ControlerFormation implements ControlerUtils {
                 gererSessionFormation(form);
                 break;
             case 3://Editer
-                gererSessionFormation(form);
                 vueAdmin.editerSession();
+                editerSessionDeFormation(form);
+                gererSessionFormation(form);
                 break;
             case 4://Afficher les sessions
+                System.out.println(form);
                 listSessionFormation = model.getCentre().getListSessionByIdFormation(form.getIdFormation());
-                vueAdmin.afficherListSession(listSessionFormation);
+                vueAdmin.afficherListSessionAvecNbParticipant(listSessionFormation,form);
                 gererSessionFormation(form);
                 break;
             case 5://Afficher une session
-                readSessionForOneFormation(form);
+                listInscriptionSession(form);
                 gererSessionFormation(form);
                 break;
+
             case 6:
                 vueAdmin.retour();
                 gererSession();
@@ -284,12 +295,17 @@ public class ControlerFormation implements ControlerUtils {
     }
 
     private void gererLaSession(List<Formation> listForma) {
+        int idFormation = 0;
         vueAdmin.faireUnChoixValide();
         Formation f = new Formation();
         // gérer erreur 
-        int idFormation = s.nextInt();
+        if(s.hasNextInt()){
+            idFormation = s.nextInt();
+        }else{
+            vueAdmin.faireUnChoixValide();
+            gererLaSession(listForma);
+        }       
         f = model.getCentre().getFormationById(idFormation);
-        // if (listForma.contains(model.getCentre().getFormationById(idFormation))) {// comme le LIKE
         if (f != null) {
             vueAdmin.afficherLaFormation(f);
             gererSessionFormation(f);
@@ -310,7 +326,7 @@ public class ControlerFormation implements ControlerUtils {
         }
     }
 
-    private void readSessionForOneFormation(Formation form) {
+    private void listInscriptionSession(Formation form) {
         listSessionFormation = model.getCentre().getListSessionByIdFormation(form.getIdFormation());
         vueAdmin.afficherListSession(listSessionFormation);
 
@@ -320,11 +336,77 @@ public class ControlerFormation implements ControlerUtils {
         sess = model.getForm().getSessionByIdSession(idSession);
         if (sess != null) {
             vueAdmin.afficherSession(sess);
+            vueAdmin.print(sess.getListInscriptionBySession());
+            gererSessionFormation(form);
+
+        } else {
+            vueAdmin.erreurSession();
+            gererSessionFormation(form);
+        }
+
+    }
+
+    private void editerSessionDeFormation(Formation form) {
+        listSessionFormation = model.getCentre().getListSessionByIdFormation(form.getIdFormation());
+        vueAdmin.afficherListSession(listSessionFormation);
+        vueAdmin.faireUnChoixValide();
+        Session sess = new Session();
+        int idSession = s.nextInt();
+        sess = model.getForm().getSessionByIdSession(idSession);
+        if (sess != null) {
+            vueAdmin.afficherSession(sess);
+            editerSession(form, sess);
             gererSessionFormation(form);
         } else {
             vueAdmin.erreurSession();
             gererSessionFormation(form);
         }
+    }
+
+    private void editerSession(Formation form, Session sess) {
+        int choixFormateur = 0;
+        int choixlocal = 0 ;
+        List<Formateur> listFormateurDispo = model.getCentre().getFormateurByFormation(form, sess);
+        vueFormateur.afficheListFormateur(listFormateurDispo);
+        if (listFormateurDispo.isEmpty()) {
+            vueAdmin.aucunFormateur();
+            ctrlFormation.gererSessionFormation(form);
+        }
+        vueAdmin.faireUnChoixValide();
+        if (s.hasNextInt()) {
+            choixFormateur = s.nextInt();
+        } else {
+            vueAdmin.erreurFormateur();
+            editerSession(form, sess);
+        }
+        Formateur f = new Formateur();
+        f = (Formateur) model.getCentre().getUserById(choixFormateur);
+        if (f != null) {
+            sess.setFormateur(f);
+        } else {
+            vueAdmin.erreurFormateur();
+            ctrlFormation.gererSessionFormation(form);
+        }
+        s.nextLine();
+        List<Local> listLocauxDispo = model.getCentre().getLocauxDispo(sess);
+        vueAdmin.afficherListLocaux(listLocauxDispo);
+        vueAdmin.faireUnChoixValide();
+        if(s.hasNextInt()){
+            choixlocal = s.nextInt();
+        }else{
+            vueAdmin.erreurLocal();
+            editerSession(form,sess);
+        }
+        Local local = new Local();
+        local = model.getCentre().getLocalById(choixlocal);
+        if (local != null) {
+            sess.setLocal(local);
+        } else {
+            vueAdmin.erreurLocal();
+            editerSession(form, sess);
+        }
+        sess.editerSession();
+        gererSessionFormation(form);
     }
 
 }

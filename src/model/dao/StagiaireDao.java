@@ -12,5 +12,13 @@ public interface StagiaireDao {
 
     public List<Inscription> getListDesInscriptions(Stagiaire stagiaire);
 
+    public Inscription getInscritpionById(int choixInscription);
+
+    public Boolean annulerInscription(Inscription inscription);
+
+    public List<Inscription> getListInscriptionNonPayer(Stagiaire aThis);
+
+    public Boolean signalerPaiement(Inscription inscription);
+
 }
     

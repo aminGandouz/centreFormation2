@@ -17,13 +17,13 @@ public class Controler implements ControlerUtils {
      */
     private Utilisateur userConnecte = null;
     private final Accueil vAccueil = new Accueil();
-    private List<Formation> listFormations;
 
     /**
      * ***** Constructor ******
      */
     public Controler() {
         AbstractDaoFactory.setFactory(MySqlDaoFactory.getInstance());
+        cleanDB();
     }
 
     /**
@@ -93,6 +93,10 @@ public class Controler implements ControlerUtils {
                 controler.start();
                 break;
         }
+    }
+
+    private void cleanDB() {
+        model.getCentre().cleanDB();
     }
 
     /**

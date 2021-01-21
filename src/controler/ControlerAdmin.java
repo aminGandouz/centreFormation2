@@ -8,7 +8,10 @@ import java.util.List;
 import model.Admin;
 import model.Formateur;
 import model.Formation;
+import model.Inscription;
+import model.Local;
 import model.Session;
+import model.Status;
 import org.mindrot.jbcrypt.BCrypt;
 import vue.VueAdmin;
 import vue.VueFormateur;
@@ -24,6 +27,9 @@ public class ControlerAdmin implements ControlerUtils {
     private List<Formateur> listFormateurs = new ArrayList<>();
     private String nom = null, prenom = null, adresse = null, telephone = null, email = null, login = null, password = null;
     private Integer prix = null, duree = null, maxParticipant = null;
+    private Status newStatus = new Status();
+    private String reduction = null;
+    private Double reduc = null;
 
     /**
      * ***** All methods ******
@@ -31,41 +37,39 @@ public class ControlerAdmin implements ControlerUtils {
     public void menuAdmin(Admin admin) {
         vueAdmin.presentationVueAdmin();
         vueAdmin.menuAdmin();
-        int choixDuMenus = choixMenus2(1, 7);
+        int choixDuMenus = choixMenus2(1, 9);
 
         switch (choixDuMenus) {
             case 1:
-                System.out.println("gerer formation");
                 ctrlFormation.gererFormation();
                 menuAdmin(admin);
                 break;
             case 2:
-                System.out.println("gerer session");
                 ctrlFormation.gererSession();
                 menuAdmin(admin);
                 break;
             case 3:
-                System.out.println("gerer formateurs");
                 gererFormateur(admin);
                 menuAdmin(admin);
                 break;
             case 4:
-                System.out.println("rechercher le formateur d'une session");
                 ctrlFormation.rechercherSessionFormateur(admin);
                 menuAdmin(admin);
                 break;
             case 5:
-                System.out.println("Communiquer Formateur Prestations ");
                 CommuniquerFormateurPrestations();
                 menuAdmin(admin);
                 break;
             case 6:
-                System.out.println("Sortir pour chaque formation la liste des sessions planifiées et le nombre de places encore disponibles");
-                displayAllSessionByFormation(admin);
-                menuAdmin(admin);
-                //// !!!!!!!!!!!!!!!! A Finir  !!!!!!!!!!!!!!!! ///////
+                gererStatusEtudiants(admin);
                 break;
             case 7:
+                gererLocaux(admin);
+                break;
+            case 8:
+                gererPaiementInscription(admin);
+                break;
+            case 9:
                 System.exit(0);
                 break;
         }
@@ -349,6 +353,79 @@ public class ControlerAdmin implements ControlerUtils {
         }
     }
 
+    private void gererStatusEtudiants(Admin admin) {
+        vueAdmin.statusEtudiants();
+        s.nextLine();
+
+        do {
+            vueAdmin.entrerNom();
+            nom = s.nextLine();
+        } while (nom == null || nom.trim().isEmpty());
+        newStatus.setNomStatus(nom);
+
+        do {
+            vueAdmin.entrerReductionStatus();
+            reduction = s.nextLine();
+
+        } while (!reduction.matches("\\d+") || Float.parseFloat(reduction) <= 0);
+        reduc = Double.parseDouble(reduction);
+        newStatus.setReduction(reduc);
+
+        Boolean ajoutStatusOk = model.getStatus().ajoutStatus(newStatus);
+        if (ajoutStatusOk) {
+            vueAdmin.ajoutStatusOk();
+        } else {
+            vueAdmin.ajoutStatusNotOk();
+        }
+        menuAdmin(admin);
+    }
+
+    private void gererLocaux(Admin admin) {
+        Local local = new Local();
+        s.nextLine();
+        do {
+            vueAdmin.entrerNom();
+            nom = s.nextLine();
+        } while (nom == null || nom.trim().isEmpty());
+        local.setNomLocal(nom);
+        Boolean ok = model.getCentre().ajoutLocal(local);
+        if (ok) {
+            vueAdmin.ajoutLocalOK();
+        } else {
+            vueAdmin.ajoutLocalNotOk();
+        }
+        menuAdmin(admin);
+    }
+
+    private void gererPaiementInscription(Admin admin) {
+        s.nextLine();
+        int choix = 0;
+        Inscription inscription = null;
+        vueAdmin.listDesInscriptions();
+        List<Inscription> listInscription = model.getCentre().getListDesInscriptions();
+        if (listInscription.isEmpty()) {
+            vueAdmin.listInscriptionVide();
+            menuAdmin(admin);
+        } else {
+            vueAdmin.afficheList(listInscription);
+            do {
+                vueAdmin.faireUnChoixValide();
+                if (s.hasNextInt()) {
+                    choix = s.nextInt();
+                    inscription = model.getCentre().getInscritpionById(choix);
+                    if(inscription == null){
+                        gererPaiementInscription(admin);
+                    }
+                }else{
+                    gererPaiementInscription(admin);
+                }
+            } while (!model.getCentre().inscriptionExist(listInscription, inscription));
+            inscription.updateEstPaye();
+            
+            vueAdmin.paiementOk();
+            menuAdmin(admin);
+        }
+    }
 }
 
 //        while (!prixString.matches("\\d+") || Integer.parseInt(prixString) <= 0);

@@ -18,7 +18,7 @@ public class Inscription {
         this.estPaye = estPaye;
         this.signalisation = signalisation;
         this.prix = prix;
-    }  
+    }
 
     public Integer getIdInscription() {
         return idInscription;
@@ -35,9 +35,6 @@ public class Inscription {
     public void setPrix(Float prix) {
         this.prix = prix;
     }
-
-
-
 
     public Boolean getEstPaye() {
         return estPaye;
@@ -58,6 +55,13 @@ public class Inscription {
     public Boolean ajoutStagiaire(Stagiaire stagiaire, Session session) {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         InscriptionDao inscriptionDao = factory.createInscriptionDao();
-        return inscriptionDao.ajoutStagiaire(stagiaire,session);
+        return inscriptionDao.ajoutStagiaire(stagiaire, session);
     }
+
+    public void updateEstPaye() {
+        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
+        InscriptionDao inscriptionDao = factory.createInscriptionDao();
+        inscriptionDao. updateEstPaye(this);
+    }
+
 }

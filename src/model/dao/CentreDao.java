@@ -2,6 +2,7 @@ package model.dao;
 
 import java.util.List;
 import model.Formation;
+import model.Inscription;
 import model.Local;
 import model.Session;
 import model.Status;
@@ -29,6 +30,16 @@ public interface CentreDao {
     public List<Formation> getListFormationsByNameFormation(String nomFormation);
 
     public List<Local> getLocauxDispo(Session session);
+
+    public void cleanDB();
+
+    public Boolean ajoutStatus(Status newStatus);
+
+    public Boolean ajoutLocal(Local local);
+
+    public List<Inscription> getListDesInscriptions();
+
+    public Inscription getInscritpionById(int choix);
 
 }
     //public List<Utilisateur> getListformateur();

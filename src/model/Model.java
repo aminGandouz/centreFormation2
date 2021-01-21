@@ -12,6 +12,7 @@ public class Model {
     private final Inscription inscription;
     private final Formateur formateur;
     private final Centre centre;
+    private final Status status;
 
     public Model() {
         this.admin = new Admin();
@@ -21,6 +22,7 @@ public class Model {
         this.inscription = new Inscription();
         this.formateur = new Formateur();
         this.centre = new Centre();
+        this.status = new Status();
     }
 
     public Formateur getFormateur() {
@@ -50,6 +52,12 @@ public class Model {
     public Centre getCentre() {
         return centre;
     }
+
+    public Status getStatus() {
+        return status;
+    }
+    
+    
 //    ////////// verifier les 2 méthodes ///////////
 //    public List<Inscription> getListDesInscriptions(int idUtilisateur) {
 //        return stagiaire.getListDesInscriptions(idUtilisateur);

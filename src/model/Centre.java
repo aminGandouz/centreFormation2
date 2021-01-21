@@ -10,19 +10,28 @@ import model.dao.UtilisateurDao;
 
 public class Centre {
 
+    /**
+     * ***** Champs Attribut ******
+     */
     private Formation formation = new Formation();
     private List<Formation> listFormations;
-    private List<Status> listStatus;
     private List<Formation> listFormationParNom;
+    private List<Status> listStatus;
     private List<Session> listSession;
     private List<Session> listSessionParFormation;// a voir
     private List<Stagiaire> listStagiaireParSessionPrixStatus;// a voir 
     private List<Local> listLocaux;
     private List<Formateur> listFormateur;
 
+    /**
+     * ***** Constructor ******
+     */
     public Centre() {
     }
 
+    /**
+     * ***** Getters and Setters ******
+     */
     public Formation getFormation() {
         return formation;
     }
@@ -71,6 +80,12 @@ public class Centre {
         this.listStagiaireParSessionPrixStatus = listStagiaireParSessionPrixStatus;
     }
 
+    /**
+     * ***** Methods ******
+     */
+    /**
+     * ***** FORMATION ******
+     */
     public List<Formation> getListFormations() {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         CentreDao centreDao = factory.createCentreDao();
@@ -78,6 +93,15 @@ public class Centre {
         return listFormations;
     }
 
+    public Formation getFormationById(Integer idFormation) {
+        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
+        FormationDao formationDao = factory.createFormationDao();
+        return formationDao.getFormationById(idFormation);
+    }
+
+    /**
+     * ***** SESSION ******
+     */
     public List<Session> getListSessionAvecNom(Formateur formateur) {
         return formation.getListSessionAvecNom(formateur);
     }
@@ -94,6 +118,27 @@ public class Centre {
         return sessionDao.getListSessionByNameFormateur(nomFormateur);
     }
 
+    public List<Session> getListSessionDispoByIdFormation(Integer choixDeLaFormation) {
+        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
+        SessionDao sessionDao = factory.createSessionDao();
+        return sessionDao.getListSessionDispoByIdFormation(choixDeLaFormation);
+    }
+
+    public Session getListSessionByIdSession(Integer idSess) {
+        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
+        SessionDao sessionDao = factory.createSessionDao();
+        return sessionDao.getListSessionByIdSession(idSess);
+    }
+
+    public List<Session> getListSessionByIdFormation(Integer idFormation) {
+        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
+        SessionDao sessionDao = factory.createSessionDao();
+        return sessionDao.getListSessionByIdFormation(idFormation);
+    }
+
+    /**
+     * ***** STATUS ******
+     */
     public List<Status> getAllStatus() {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         CentreDao centreDao = factory.createCentreDao();
@@ -101,23 +146,13 @@ public class Centre {
         return listStatus;
     }
 
-    public Formation getFormationById(Integer idFormation) {
+    /**
+     * ***** LOCAL ******
+     */
+    public Local getLocalById(int idLocal) {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
-        FormationDao formationDao = factory.createFormationDao();
-        return formationDao.getFormationById(idFormation);
-    }
-
-    public List<Formateur> getAllFormateur() {
-        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
-        AdminDao adminDao = factory.createAdminDao();
-        listFormateur = adminDao.getListFormateurs();
-        return listFormateur;
-    }
-
-    public Utilisateur getUserById(Integer idUtilisateur) {
-        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
-        UtilisateurDao utilisateurDao = factory.createUtilisateurDaoDao();
-        return utilisateurDao.getUserById(idUtilisateur);
+        CentreDao centreDao = factory.createCentreDao();
+        return centreDao.getLocalById(idLocal);
     }
 
     public List<Local> getAllLocaux() {
@@ -127,16 +162,26 @@ public class Centre {
         return listLocaux;
     }
 
-    public Local getLocalById(int idLocal) {
+    public Boolean ajoutLocal(Local local) {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         CentreDao centreDao = factory.createCentreDao();
-        return centreDao.getLocalById(idLocal);
+        return centreDao.ajoutLocal(local);
     }
 
-    public List<Session> getListSessionByIdFormation(Integer idFormation) {
+    public List<Local> getLocauxDispo(Session session) {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
-        SessionDao sessionDao = factory.createSessionDao();
-        return sessionDao.getListSessionByIdFormation(idFormation);
+        CentreDao centreDao = factory.createCentreDao();
+        return centreDao.getLocauxDispo(session);
+    }
+
+    /**
+     * ***** FORMATEUR ******
+     */
+    public List<Formateur> getAllFormateur() {
+        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
+        AdminDao adminDao = factory.createAdminDao();
+        listFormateur = adminDao.getListFormateurs();
+        return listFormateur;
     }
 
     public List<Formateur> getListFormateurs() {
@@ -149,6 +194,21 @@ public class Centre {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         AdminDao formateurDao = factory.createAdminDao();
         return formateurDao.getFormateurByName(nomFormateur);
+    }
+
+    public List<Formateur> getFormateurByFormation(Formation form, Session session) {
+        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
+        AdminDao formateurDao = factory.createAdminDao();
+        return formateurDao.getFormateurByFormation(form, session);
+    }
+
+    /**
+     * ***** USER ******
+     */
+    public Utilisateur getUserById(Integer idUtilisateur) {
+        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
+        UtilisateurDao utilisateurDao = factory.createUtilisateurDaoDao();
+        return utilisateurDao.getUserById(idUtilisateur);
     }
 
     public List<Formation> getListFormationDispoPOurFormateur(Integer idUtilisateur) {
@@ -191,34 +251,37 @@ public class Centre {
         return centreDao.getListFormationsByNameFormation(nomFormation);
     }
 
-    public List<Formateur> getFormateurByFormation(Formation form,Session session) {
-        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
-        AdminDao formateurDao = factory.createAdminDao();
-        return formateurDao.getFormateurByFormation(form,session);
-    }
-
-    public List<Local> getLocauxDispo(Session session) {
+    /**
+     * ***** INSCRIPTION ******
+     */
+    public List<Inscription> getListDesInscriptions() {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         CentreDao centreDao = factory.createCentreDao();
-        return centreDao.getLocauxDispo(session);
+        return centreDao.getListDesInscriptions();
     }
 
-    public List<Session> getListSessionDispoByIdFormation(Integer choixDeLaFormation) {
+    public Inscription getInscritpionById(int choix) {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
-        SessionDao sessionDao = factory.createSessionDao();
-        return sessionDao.getListSessionDispoByIdFormation(choixDeLaFormation);
+        CentreDao centreDao = factory.createCentreDao();
+        return centreDao.getInscritpionById(choix);
     }
 
-    public Session getListSessionByIdSession(Integer idSess) {
+    /**
+     * ***** CLEAN ******
+     */
+    public void cleanDB() {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
-        SessionDao sessionDao = factory.createSessionDao();
-        return sessionDao.getListSessionByIdSession(idSess);
+        CentreDao centreDao = factory.createCentreDao();
+        centreDao.cleanDB();
     }
 
+    public boolean inscriptionExist(List<Inscription> listInscription, Inscription inscription) {
+        Boolean ok = false;       
+        for (Inscription inscription1 : listInscription) {
+            if(inscription1.getIdInscription() == inscription.getIdInscription()){
+                ok = true;
+            }
+        }
+        return ok;
+    }
 }
-
-//    public List<Session> getListFormationByNameFormateur(String nameSession) {
-//        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
-//        SessionDao sessionDao = factory.createSessionDao();
-//        return sessionDao.getListFormationAvecNom(nameSession);
-//    }

@@ -65,15 +65,22 @@ public class MySqlAdminDao implements AdminDao {
         Connection c = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
+        String formateurExist = " SELECT DISTINCT idFormateur FROM session WHERE (session.dateDebut>CURDATE() OR session.dateFin>CURDATE()) AND idFormateur = ? ";
         String sql = "update `Utilisateur` set Enable = ? WHERE `nom` = ? and role = ? ";
 
         try {
             c = MySqlDaoFactory.getInstance().getConnection();
-            ps = c.prepareStatement(sql);
-            ps.setBoolean(1, false);
-            ps.setString(2, formateur.getNom());
-            ps.setInt(3, formateur.getRole().getIdRole());
-            ps.executeUpdate();
+            ps = c.prepareStatement(formateurExist);
+            ps.setInt(1, formateur.getIdUtilisateur());
+            rs = ps.executeQuery();
+
+            if (!rs.next()) {
+                ps = c.prepareStatement(sql);
+                ps.setBoolean(1, false);
+                ps.setString(2, formateur.getNom());
+                ps.setInt(3, formateur.getRole().getIdRole());
+                ps.executeUpdate();
+            }
 
         } catch (SQLException e) {
             System.out.println("Probleme avec la requete SQL effacerFormateur(Formateur formateur)");
@@ -214,34 +221,32 @@ public class MySqlAdminDao implements AdminDao {
     }
 
     @Override
-    public List<Formateur> getFormateurByFormation(Formation form ,Session sess) {
+    public List<Formateur> getFormateurByFormation(Formation form, Session sess) {
         List<Formateur> listFormateurs = new ArrayList<>();
         Connection c = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        int IdRole = 3;
-        String sql = " select distinct utilisateur.IdUtilisateur,Nom,Prenom,Adresse,Telephone,Email,Login,Password,IdRole,DenomRole,IdStatus,DenomStatus \n " +
-" from utilisateur \n " +
-" join roles on utilisateur.Role = roles.IdRole \n " +
-" join Status on utilisateur.Status = Status.IdStatus \n " +
-" join donner on utilisateur.IdUtilisateur = donner.IdUtilisateur\n " +
-" join session on session.IdFormateur = utilisateur.IdUtilisateur\n " +
-" where donner.IdFormation = ? and utilisateur.IdUtilisateur not in (select session.IdFormateur from session where SESSION.DateDebut BETWEEN ? and ? and session.DateFin not BETWEEN  ? and ? \n " +
-" group by utilisateur.IdUtilisateur) ";
+        String sql = " select distinct utilisateur.IdUtilisateur,Nom,Prenom,Adresse,Telephone,Email,Login,Password,IdRole,DenomRole,IdStatus,DenomStatus \n "
+                + " from utilisateur \n "
+                + " join roles on utilisateur.Role = roles.IdRole \n "
+                + " join Status on utilisateur.Status = Status.IdStatus \n "
+                + " join donner on utilisateur.IdUtilisateur = donner.IdUtilisateur\n "
+                + " where donner.IdFormation = ? and utilisateur.IdUtilisateur not in (select session.IdFormateur from session where session.dateDebut < ? AND session.dateFin > ? OR session.dateDebut > ? AND session.dateFin < ? \n "
+                + " group by utilisateur.IdUtilisateur) ";
         try {
             c = MySqlDaoFactory.getInstance().getConnection();
             ps = c.prepareStatement(sql);
             ps.setInt(1, form.getIdFormation());
-            ps.setDate(2, new java.sql.Date(sess.getDateDebut().getTime()));
-            ps.setDate(3, new java.sql.Date(sess.getDateFin().getTime()));
-            ps.setDate(4, new java.sql.Date(sess.getDateDebut().getTime()));
-            ps.setDate(5, new java.sql.Date(sess.getDateFin().getTime()));
+            ps.setDate(2, new java.sql.Date(sess.getDateFin().getTime()));
+            ps.setDate(3, new java.sql.Date(sess.getDateDebut().getTime()));
+            ps.setDate(4, new java.sql.Date(sess.getDateFin().getTime()));
+            ps.setDate(5, new java.sql.Date(sess.getDateDebut().getTime()));
             rs = ps.executeQuery();
             while (rs.next()) {
                 Formateur formateur = new Formateur(rs.getInt(1), rs.getString(2), rs.getString(3),
                         rs.getString(4), rs.getString(5),
                         rs.getString(6), rs.getString(7), rs.getString(8),
-                        new Role(rs.getInt(9), rs.getString(IdRole)));
+                        new Role(rs.getInt(9), rs.getString(10)));
                 listFormateurs.add(formateur);
             }
 

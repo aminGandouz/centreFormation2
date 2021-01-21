@@ -35,14 +35,12 @@ public class ControlerStagiaire implements ControlerUtils {
                 break;
 
             case 2:
-                System.out.println("annuler");
-                
+                annulerInscription(stagiaire);
                 break;
             case 3:
-                System.out.println("signaler");
+                signalerPaiement(stagiaire);
                 break;
             case 4:
-                System.out.println("consulter");
                 vueStagiaire.listDesInscriptions();
                 List<Inscription> listInscription = stagiaire.getListDesInscriptions();
                 if (listInscription.isEmpty()) {
@@ -83,7 +81,7 @@ public class ControlerStagiaire implements ControlerUtils {
         getSessionId(listSession);
         return choixDuMenus;
     }
-
+    /* TODO mettre un do while */
     private void inscriptionSession(Stagiaire stagiaire) {
         s.nextLine();
         List<Formation> listFormation = model.getCentre().getListFormations();
@@ -107,24 +105,22 @@ public class ControlerStagiaire implements ControlerUtils {
                     } else {
                         if (f.getMaxParticipant() > sess.getListInscription().size()) {
                             Boolean ajoutOK = model.getInscription().ajoutStagiaire(stagiaire, sess);
-                            if(ajoutOK){
+                            if (ajoutOK) {
                                 vueStagiaire.ajoutOK();
-                            }else{
+                            } else {
                                 vueStagiaire.plusDePlaceDispo();
                             }
                             menusStagiaire(stagiaire);
-                        }else{
+                        } else {
                             vueStagiaire.plusDePlaceDispo();
-                            ctrlStagiaire.menusStagiaire(stagiaire);                       }
+                            ctrlStagiaire.menusStagiaire(stagiaire);
+                        }
                     }
-
                 }
-
             }
         } else {
             inscriptionSession(stagiaire);
         }
-
     }
 
     public void inscription() {
@@ -252,4 +248,64 @@ public class ControlerStagiaire implements ControlerUtils {
         vueStagiaire.erreur();
     }
 
+    private void annulerInscription(Stagiaire stagiaire) {
+        List<Inscription> listInscription = stagiaire.getListInscription();
+        if (listInscription.isEmpty()) {
+            vueStagiaire.listDesInscriptionsVide();
+            menusStagiaire(stagiaire);
+        } else {
+            vueStagiaire.afficheList(listInscription);
+            vueStagiaire.faireChoix();
+            if (s.hasNextInt()) {
+                int choixInscription = s.nextInt();
+                Inscription inscription = model.getStagiaire().getInscritpionById(choixInscription);
+                if (inscription == null) {
+                    vueStagiaire.faireChoix();
+                    menusStagiaire(stagiaire);
+                } else {
+                    Boolean deleteOk = stagiaire.annulerInscription(inscription);
+                    if (deleteOk) {
+                        vueStagiaire.deleteOK();
+                    } else {
+                        vueStagiaire.deleteNotOK();
+                    }
+                    menusStagiaire(stagiaire);
+                }
+            } else {
+                menusStagiaire(stagiaire);
+            }
+        }
+
+    }
+
+    private void signalerPaiement(Stagiaire stagiaire) {
+        List<Inscription> listInscription = stagiaire.getListInscriptionNonPayer();
+        if (listInscription.isEmpty()) {
+            vueStagiaire.listDesInscriptionsVide();
+            menusStagiaire(stagiaire);
+        } else {
+            vueStagiaire.afficheList(listInscription);
+            vueStagiaire.faireChoix();
+            if (s.hasNextInt()) {
+                int choixInscription = s.nextInt();
+                Inscription inscription = model.getStagiaire().getInscritpionById(choixInscription);
+                if (inscription == null) {
+                    vueStagiaire.faireChoix();
+                    menusStagiaire(stagiaire);
+                } else {
+                    Boolean paiementOk = stagiaire.signalerPaiement(inscription);
+                    if (paiementOk) {
+                        vueStagiaire.paiementOK();
+                    } else {
+                        vueStagiaire.paiementNotOK();
+                    }
+                    menusStagiaire(stagiaire);
+                }
+            } else {
+                menusStagiaire(stagiaire);
+            }
+
+        }
+
+    }
 }

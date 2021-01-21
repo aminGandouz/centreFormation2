@@ -309,7 +309,7 @@ public class MySqlSessionDao implements SessionDao {
                 + " and s.IdFormateur = u.IdUtilisateur\n "
                 + " and s.Local = lo.IdLocal\n "
                 + " and u.Role = ro.IdRole \n "
-                + " and u.Status = st.IdStatus\n "
+                + " and u.Status = st.IdStatus and s.enable = ? \n "
                 + " and s.IdFormation = ? ";
 
         try {
@@ -317,7 +317,8 @@ public class MySqlSessionDao implements SessionDao {
             ps = c.prepareStatement(sql);
             ps.setInt(1, choixDeLaFormation);
             ps.setInt(2, 0);
-            ps.setInt(3, choixDeLaFormation);
+            ps.setBoolean(3, true);
+            ps.setInt(4, choixDeLaFormation);
             rs = ps.executeQuery();
             while (rs.next()) {
                 Session session = new Session(rs.getInt(1),
@@ -350,8 +351,8 @@ public class MySqlSessionDao implements SessionDao {
         Connection c = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String sql = " SELECT `IdInscription`, `EstPaye`, `Signalisation`, `prix` FROM `inscrire` \n " +
-" WHERE inscrire.IdSession = ? ";
+        String sql = " SELECT `IdInscription`, `EstPaye`, `Signalisation`, `prix` FROM `inscrire` \n "
+                + " WHERE inscrire.IdSession = ? ";
 
         try {
             c = MySqlDaoFactory.getInstance().getConnection();
@@ -373,5 +374,60 @@ public class MySqlSessionDao implements SessionDao {
         }
         return listInscription;
     }
-}
 
+    @Override
+    public List<String> getListInscriptionBySession(Session s) {
+        List<String> i = new ArrayList<>();
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String sql = " SELECT utilisateur.nom , utilisateur.prenom, status.DenomStatus, inscrire.prix FROM utilisateur,status,inscrire WHERE utilisateur.status = status.idStatus AND utilisateur.IdUtilisateur = inscrire.IdUtilisateur AND inscrire.IdSession = ? ";
+        try {
+
+            c = MySqlDaoFactory.getInstance().getConnection();
+            ps = c.prepareStatement(sql);
+            ps.setInt(1, s.getIdSession());
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String in = rs.getString(1) + " " + rs.getString(2) + " " + rs.getString(3) + " " + rs.getDouble(4);
+                i.add(in);
+
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            MySqlDaoFactory.closeResultSet(rs);
+            MySqlDaoFactory.closeStatement(ps);
+            MySqlDaoFactory.closeConnection(c);
+        }
+        return i;
+
+    }
+
+    @Override
+    public void editerSession(Session session) {
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String sql = " UPDATE `session` SET `IdFormateur`= ? ,`Local`= ? WHERE session.IdSession = ? ";
+
+        try {
+            c = MySqlDaoFactory.getInstance().getConnection();
+            ps = c.prepareStatement(sql);
+            ps.setInt(1, session.getFormateur().getIdUtilisateur());
+            ps.setInt(2, session.getLocal().getIdLocal());
+            ps.setInt(3, session.getIdSession());
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("Probleme avec la requete SQL editerSession(Session session)");
+            e.printStackTrace();
+        } finally {
+            MySqlDaoFactory.closeResultSet(rs);
+            MySqlDaoFactory.closeStatement(ps);
+            MySqlDaoFactory.closeConnection(c);
+        }
+    }
+}

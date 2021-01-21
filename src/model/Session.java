@@ -13,7 +13,6 @@ public class Session {
     private Date dateDebut;
     private Date dateFin;
     private Local local;
-    //private Float prix;
     private List<Inscription> listInscription;
 
     public Session() {
@@ -115,6 +114,18 @@ public class Session {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         SessionDao sessionDao = factory.createSessionDao();
         sessionDao.deleteSessionById(idSession);
+    }
+
+    public List<String> getListInscriptionBySession() {
+        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
+        SessionDao sessionDao = factory.createSessionDao();
+        return sessionDao.getListInscriptionBySession(this);
+    }
+
+    public void editerSession() {
+        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
+        SessionDao sessionDao = factory.createSessionDao();
+        sessionDao.editerSession(this);
     }
 
 }

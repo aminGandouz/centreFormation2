@@ -124,4 +124,10 @@ public abstract class Utilisateur {
         UtilisateurDao utilisateurDao = factory.createUtilisateurDao();
         return utilisateurDao.authentificationLogin(loginString);
     }
+
+    @Override
+    public String toString() {
+        return "Utilisateur{" + "idUtilisateur=" + idUtilisateur + ", nom=" + nom + ", prenom=" + prenom + ", adresse=" + adresse + ", telephone=" + telephone + ", email=" + email + ", login=" + login + ", password=" + password + ", role=" + role + '}';
+    }
+    
 }

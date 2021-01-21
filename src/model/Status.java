@@ -1,11 +1,20 @@
-
 package model;
 
+import model.dao.AbstractDaoFactory;
+import model.dao.CentreDao;
+
 public class Status {
+
     private Integer idStatus;
     private String nomStatus;
+    private Double reduction;
 
     public Status() {
+    }
+
+    public Status(String nomStatus, Double reduction) {
+        this.nomStatus = nomStatus;
+        this.reduction = reduction;
     }
 
     public Status(Integer idStatus, String nomStatus) {
@@ -28,5 +37,24 @@ public class Status {
     public void setNomStatus(String nomStatus) {
         this.nomStatus = nomStatus;
     }
-    
+
+    public Double getReduction() {
+        return reduction;
+    }
+
+    public void setReduction(Double reduction) {
+        this.reduction = reduction;
+    }
+
+    @Override
+    public String toString() {
+        return "Status{" + "idStatus=" + idStatus + ", nomStatus=" + nomStatus + '}';
+    }
+
+    public Boolean ajoutStatus(Status newStatus) {
+        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
+        CentreDao centreDao = factory.createCentreDao();
+        return centreDao.ajoutStatus(newStatus);
+    }
+
 }

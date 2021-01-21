@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import model.Formation;
+import model.Inscription;
 import model.Local;
 import model.Role;
 import model.Session;
@@ -28,6 +29,65 @@ public class MySqlCentreDao implements CentreDao {
     private MySqlCentreDao() {
     }
 
+    /**
+     * ****** FORMATION ************
+     */
+    @Override
+    public List<Formation> getListFormation() {
+        List<Formation> listFormation = new ArrayList<>();
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String sql = " select IdFormation,Intitule,Prix,Duree,MaxParticipant,NbreParticipantMin from formation ";
+        try {
+            c = MySqlDaoFactory.getInstance().getConnection();
+            ps = c.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Formation formation = new Formation(rs.getInt(1), rs.getString(2), rs.getFloat(3), rs.getInt(4), rs.getInt(5), rs.getInt(6));
+                listFormation.add(formation);
+            }
+        } catch (SQLException e) {
+            System.out.println("Problème avec la requete SQL getListFormation()");
+            e.printStackTrace();
+        } finally {
+            MySqlDaoFactory.closeResultSet(rs);
+            MySqlDaoFactory.closeStatement(ps);
+            MySqlDaoFactory.closeConnection(c);
+        }
+        return listFormation;
+    }
+
+    @Override
+    public List<Formation> getListFormationsByNameFormation(String nomFormation) {
+        List<Formation> listFormation = new ArrayList<>();
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String sql = " select IdFormation,Intitule,Prix,Duree,MaxParticipant,NbreParticipantMin from formation where intitule like ? ";
+        try {
+            c = MySqlDaoFactory.getInstance().getConnection();
+            ps = c.prepareStatement(sql);
+            ps.setString(1, "%" + nomFormation + "%");
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Formation formation = new Formation(rs.getInt(1), rs.getString(2), rs.getFloat(3), rs.getInt(4), rs.getInt(5), rs.getInt(6));
+                listFormation.add(formation);
+            }
+        } catch (SQLException e) {
+            System.out.println("Problème avec la requete SQL getListFormationsByNameFormation(String nomFormation)");
+            e.printStackTrace();
+        } finally {
+            MySqlDaoFactory.closeResultSet(rs);
+            MySqlDaoFactory.closeStatement(ps);
+            MySqlDaoFactory.closeConnection(c);
+        }
+        return listFormation;
+    }
+
+    /**
+     * ****** STATUS ************
+     */
     public Status getStatusById(int idStatus) {
         Status status = null;
         Connection c = null;
@@ -53,80 +113,38 @@ public class MySqlCentreDao implements CentreDao {
         return status;
     }
 
-    public Local getLocalById(int idLocal) {
-        Local local = null;
-        Connection c = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        String sql = " select IdLocal,DenomLocal from locaux where IdLocal = ?  ";
-        try {
-            c = MySqlDaoFactory.getInstance().getConnection();
-            ps = c.prepareStatement(sql);
-            ps.setInt(1, idLocal);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                local = new Local(rs.getInt(1), rs.getString(2));
-            }
-        } catch (SQLException e) {
-            System.out.println(" Problème avec la requete SQL  getLocalById(int idLocal) ");
-            e.printStackTrace();
-        } finally {
-            MySqlDaoFactory.closeResultSet(rs);
-            MySqlDaoFactory.closeStatement(ps);
-            MySqlDaoFactory.closeConnection(c);
-        }
-        return local;
-    }
-
-    public Role getRoleById(int idRole) {
-        Role role = null;
-        Connection c = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        String sql = " select IdRole,DenomRole from roles where IdRole = ?  ";
-        try {
-            c = MySqlDaoFactory.getInstance().getConnection();
-            ps = c.prepareStatement(sql);
-            ps.setInt(1, idRole);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                role = new Role(rs.getInt(1), rs.getString(2));
-            }
-        } catch (SQLException e) {
-            System.out.println(" Problème avec la requete SQL getRoleById(int idRole) ");
-            e.printStackTrace();
-        } finally {
-            MySqlDaoFactory.closeResultSet(rs);
-            MySqlDaoFactory.closeStatement(ps);
-            MySqlDaoFactory.closeConnection(c);
-        }
-        return role;
-    }
-
     @Override
-    public List<Formation> getListFormation() {
-        List<Formation> listFormation = new ArrayList<>();
+    public Boolean ajoutStatus(Status newStatus) {
+        Boolean ok = false;
         Connection c = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String sql = " select IdFormation,Intitule,Prix,Duree,MaxParticipant,NbreParticipantMin from formation ";
+        String statusExist = " select idStatus from status where DenomStatus = ?  ";
+        String sql = "INSERT INTO `status` (`DenomStatus`, `reduction`) values(?,?)";
         try {
             c = MySqlDaoFactory.getInstance().getConnection();
-            ps = c.prepareStatement(sql);
+            ps = c.prepareStatement(statusExist);
+            ps.setString(1, newStatus.getNomStatus());
             rs = ps.executeQuery();
-            while (rs.next()) {
-                Formation formation = new Formation(rs.getInt(1), rs.getString(2), rs.getFloat(3), rs.getInt(4), rs.getInt(5), rs.getInt(6));
-                listFormation.add(formation);
+
+            if (!rs.next()) {
+                ps = c.prepareStatement(sql);
+                ps.setString(1, newStatus.getNomStatus());
+                ps.setDouble(2, newStatus.getReduction());
+                ps.executeUpdate();
+                ok = true;
             }
+
         } catch (SQLException e) {
-            System.out.println("Problème avec la requete SQL getListFormation()");
+            System.out.println("Probleme avec la requete SQL ajoutStatus(Status newStatus)");
             e.printStackTrace();
+            ok = false;
         } finally {
             MySqlDaoFactory.closeResultSet(rs);
             MySqlDaoFactory.closeStatement(ps);
             MySqlDaoFactory.closeConnection(c);
         }
-        return listFormation;
+        return ok;
     }
 
     @Override
@@ -155,6 +173,34 @@ public class MySqlCentreDao implements CentreDao {
         return listStatus;
     }
 
+    /**
+     * ****** LOCAL ************
+     */
+    public Local getLocalById(int idLocal) {
+        Local local = null;
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String sql = " select IdLocal,DenomLocal from locaux where IdLocal = ?  ";
+        try {
+            c = MySqlDaoFactory.getInstance().getConnection();
+            ps = c.prepareStatement(sql);
+            ps.setInt(1, idLocal);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                local = new Local(rs.getInt(1), rs.getString(2));
+            }
+        } catch (SQLException e) {
+            System.out.println(" Problème avec la requete SQL  getLocalById(int idLocal) ");
+            e.printStackTrace();
+        } finally {
+            MySqlDaoFactory.closeResultSet(rs);
+            MySqlDaoFactory.closeStatement(ps);
+            MySqlDaoFactory.closeConnection(c);
+        }
+        return local;
+    }
+
     @Override
     public List<Local> getAllLocaux() {
         List<Local> listLocaux = new ArrayList<>();
@@ -181,6 +227,101 @@ public class MySqlCentreDao implements CentreDao {
         return listLocaux;
     }
 
+    @Override
+    public List<Local> getLocauxDispo(Session session) {
+        List<Local> listLocaux = new ArrayList<>();
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String sql = " select IdLocal,DenomLocal from locaux\n "
+                + " where IdLocal not in(select session.Local from session where locaux.idLocal = session.Local AND session.dateDebut < ? AND session.dateFin > ? OR session.dateDebut > ? AND session.dateFin < ? ) ";
+        try {
+            c = MySqlDaoFactory.getInstance().getConnection();
+            ps = c.prepareStatement(sql);
+            ps.setDate(1, new java.sql.Date(session.getDateFin().getTime()));
+            ps.setDate(2, new java.sql.Date(session.getDateDebut().getTime()));
+            ps.setDate(3, new java.sql.Date(session.getDateFin().getTime()));
+            ps.setDate(4, new java.sql.Date(session.getDateDebut().getTime()));
+
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Local local = new Local(rs.getInt(1), rs.getString(2));
+                listLocaux.add(local);
+            }
+        } catch (SQLException e) {
+            System.out.println(" Problème avec la requete SQL getLocauxDispo(Session session) ");
+            e.printStackTrace();
+        } finally {
+            MySqlDaoFactory.closeResultSet(rs);
+            MySqlDaoFactory.closeStatement(ps);
+            MySqlDaoFactory.closeConnection(c);
+        }
+        return listLocaux;
+    }
+
+    @Override
+    public Boolean ajoutLocal(Local local) {
+        Boolean ok = false;
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String localExist = " Select IdLocal from locaux where DenomLocal = ?  ";
+        String sql = " INSERT INTO `locaux` (`DenomLocal`) values(?)";
+        try {
+            c = MySqlDaoFactory.getInstance().getConnection();
+            ps = c.prepareStatement(localExist);
+            ps.setString(1, local.getNomLocal());
+            rs = ps.executeQuery();
+            if (!rs.next()) {
+                ps = c.prepareStatement(sql);
+                ps.setString(1, local.getNomLocal());
+                ps.executeUpdate();
+                ok = true;
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Probleme avec la requete SQL ajoutStatus(Status newStatus)");
+            e.printStackTrace();
+            ok = false;
+        } finally {
+            MySqlDaoFactory.closeResultSet(rs);
+            MySqlDaoFactory.closeStatement(ps);
+            MySqlDaoFactory.closeConnection(c);
+        }
+        return ok;
+    }
+
+    /**
+     * ****** ROLE ************
+     */
+    public Role getRoleById(int idRole) {
+        Role role = null;
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String sql = " select IdRole,DenomRole from roles where IdRole = ?  ";
+        try {
+            c = MySqlDaoFactory.getInstance().getConnection();
+            ps = c.prepareStatement(sql);
+            ps.setInt(1, idRole);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                role = new Role(rs.getInt(1), rs.getString(2));
+            }
+        } catch (SQLException e) {
+            System.out.println(" Problème avec la requete SQL getRoleById(int idRole) ");
+            e.printStackTrace();
+        } finally {
+            MySqlDaoFactory.closeResultSet(rs);
+            MySqlDaoFactory.closeStatement(ps);
+            MySqlDaoFactory.closeConnection(c);
+        }
+        return role;
+    }
+
+    /**
+     * ****** FORMATEUR ************
+     */
     @Override
     public List<Formation> getListFormationByIdFormateur(Integer idUtilisateur) {
         List<Formation> listFormationDuFormateur = new ArrayList<>();
@@ -324,59 +465,89 @@ public class MySqlCentreDao implements CentreDao {
         return isFormateurExist;
     }
 
+    /**
+     * ****** INSCRIPTION ************
+     */
     @Override
-    public List<Formation> getListFormationsByNameFormation(String nomFormation) {
-        List<Formation> listFormation = new ArrayList<>();
+    public List<Inscription> getListDesInscriptions() {
+        List<Inscription> listInscription = new ArrayList<>();
         Connection c = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String sql = " select IdFormation,Intitule,Prix,Duree,MaxParticipant,NbreParticipantMin from formation where intitule like ? ";
+        String sql = " SELECT `IdInscription`, `IdUtilisateur`, `IdSession`, `EstPaye`, `Signalisation`, `prix` FROM `inscrire` where signalisation = ? and EstPaye = ? ";
+
         try {
             c = MySqlDaoFactory.getInstance().getConnection();
             ps = c.prepareStatement(sql);
-            ps.setString(1, "%" + nomFormation + "%");
+            ps.setBoolean(1, true);
+            ps.setBoolean(2, false);
             rs = ps.executeQuery();
             while (rs.next()) {
-                Formation formation = new Formation(rs.getInt(1), rs.getString(2), rs.getFloat(3), rs.getInt(4), rs.getInt(5), rs.getInt(6));
-                listFormation.add(formation);
+                Inscription inscritpion = new Inscription(rs.getInt(1), rs.getBoolean(2), rs.getBoolean(3), rs.getFloat(4));
+                listInscription.add(inscritpion);
             }
         } catch (SQLException e) {
-            System.out.println("Problème avec la requete SQL getListFormationsByNameFormation(String nomFormation)");
+            System.out.println("Probleme avec la requete SQL  getListDesInscriptions()");
             e.printStackTrace();
         } finally {
             MySqlDaoFactory.closeResultSet(rs);
             MySqlDaoFactory.closeStatement(ps);
             MySqlDaoFactory.closeConnection(c);
         }
-        return listFormation;
+        return listInscription;
     }
 
     @Override
-    public List<Local> getLocauxDispo(Session session) {
-        List<Local> listLocaux = new ArrayList<>();
+    public Inscription getInscritpionById(int choix) {
+        Inscription inscription = null;
         Connection c = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String sql = " select IdLocal,DenomLocal from locaux \n " +
-" where IdLocal not in(select session.Local from session where DATEDIFF(now(),? ) < ?) ";
+        String sql = " SELECT `IdInscription`, `IdUtilisateur`, `IdSession`, `EstPaye`, `Signalisation`, `prix` FROM `inscrire` where IdInscription = ? ";
+
         try {
             c = MySqlDaoFactory.getInstance().getConnection();
             ps = c.prepareStatement(sql);
-            ps.setDate(1, new java.sql.Date(session.getDateFin().getTime()));
-            ps.setInt(2, 0);
+            ps.setInt(1, choix);
             rs = ps.executeQuery();
             while (rs.next()) {
-                Local local = new Local(rs.getInt(1), rs.getString(2));
-                listLocaux.add(local);
+                inscription = new Inscription(rs.getInt(1), rs.getBoolean(2), rs.getBoolean(3), rs.getFloat(4));
+
             }
         } catch (SQLException e) {
-            System.out.println(" Problème avec la requete SQL getLocauxDispo(Session session) ");
+            System.out.println("Probleme avec la requete SQL  getListDesInscriptions()");
             e.printStackTrace();
         } finally {
             MySqlDaoFactory.closeResultSet(rs);
             MySqlDaoFactory.closeStatement(ps);
             MySqlDaoFactory.closeConnection(c);
         }
-        return listLocaux;
+        return inscription;
     }
+
+    /**
+     * ****** CLEAN ************
+     */
+    @Override
+    public void cleanDB() {
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String sql = " UPDATE `session` SET `enable`= ? where DATEDIFF(now(),session.DateFin)>? ";
+        try {
+            c = MySqlDaoFactory.getInstance().getConnection();
+            ps = c.prepareStatement(sql);
+            ps.setBoolean(1, false);
+            ps.setInt(2, 365);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Probleme avec la requete SQL cleanDB()");
+            e.printStackTrace();
+        } finally {
+            MySqlDaoFactory.closeResultSet(rs);
+            MySqlDaoFactory.closeStatement(ps);
+            MySqlDaoFactory.closeConnection(c);
+        }
+    }
+
 }

@@ -7,10 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import model.Inscription;
-import model.Role;
 import model.Stagiaire;
-import model.Status;
-import model.Utilisateur;
 import model.dao.StagiaireDao;
 
 public class MySqlStagiaireDao implements StagiaireDao {
@@ -106,6 +103,87 @@ public class MySqlStagiaireDao implements StagiaireDao {
             ps.setInt(1, stagiaire.getIdUtilisateur());
             rs = ps.executeQuery();
             while (rs.next()) {
+                Inscription inscritpion = new Inscription(rs.getInt(1), rs.getBoolean(4), rs.getBoolean(5), rs.getFloat(6));
+                listInscription.add(inscritpion);
+            }
+        } catch (SQLException e) {
+            System.out.println("Probleme avec la requete SQL  getListDesInscriptions(Integer idUtilisateur)");
+            e.printStackTrace();
+        } finally {
+            MySqlDaoFactory.closeResultSet(rs);
+            MySqlDaoFactory.closeStatement(ps);
+            MySqlDaoFactory.closeConnection(c);
+        }
+        return listInscription;
+    }
+
+    @Override
+    public Inscription getInscritpionById(int choixInscription) {
+        Inscription inscription = null;
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String sql = " SELECT `IdInscription`, `IdUtilisateur`, `IdSession`, `EstPaye`, `Signalisation`, `prix` FROM `inscrire` WHERE IdInscription = ?  ";
+
+        try {
+            c = MySqlDaoFactory.getInstance().getConnection();
+            ps = c.prepareStatement(sql);
+            ps.setInt(1, choixInscription);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                inscription = new Inscription(rs.getInt(1), rs.getBoolean(2), rs.getBoolean(3), rs.getFloat(4));
+            }
+        } catch (SQLException e) {
+            System.out.println("Probleme avec la requete SQL  getInscritpionById(int choixInscription)");
+            e.printStackTrace();
+        } finally {
+            MySqlDaoFactory.closeResultSet(rs);
+            MySqlDaoFactory.closeStatement(ps);
+            MySqlDaoFactory.closeConnection(c);
+        }
+        return inscription;
+    }
+
+    @Override
+    public Boolean annulerInscription(Inscription inscription) {
+        Boolean ok = false;
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String sql = " delete FROM `inscrire` WHERE IdInscription = ?  ";
+
+        try {
+            c = MySqlDaoFactory.getInstance().getConnection();
+            ps = c.prepareStatement(sql);
+            ps.setInt(1, inscription.getIdInscription());
+            ps.executeUpdate();
+            ok = true;
+        } catch (SQLException e) {
+            System.out.println("Probleme avec la requete SQL  getInscritpionById(int choixInscription)");
+            e.printStackTrace();
+        } finally {
+            MySqlDaoFactory.closeResultSet(rs);
+            MySqlDaoFactory.closeStatement(ps);
+            MySqlDaoFactory.closeConnection(c);
+        }
+        return ok;
+    }
+
+    @Override
+    public List<Inscription> getListInscriptionNonPayer(Stagiaire stagiaire) {
+        List<Inscription> listInscription = new ArrayList<>();
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String sql = " SELECT `IdInscription`, `IdUtilisateur`, `IdSession`, `EstPaye`, `Signalisation`, `prix` FROM `inscrire` WHERE idUtilisateur = ? and signalisation = ? ";
+
+        try {
+            c = MySqlDaoFactory.getInstance().getConnection();
+            ps = c.prepareStatement(sql);
+            ps.setInt(1, stagiaire.getIdUtilisateur());
+            ps.setBoolean(2, false);
+            rs = ps.executeQuery();
+            while (rs.next()) {
                 Inscription inscritpion = new Inscription(rs.getInt(1), rs.getBoolean(2), rs.getBoolean(3), rs.getFloat(4));
                 listInscription.add(inscritpion);
             }
@@ -118,5 +196,31 @@ public class MySqlStagiaireDao implements StagiaireDao {
             MySqlDaoFactory.closeConnection(c);
         }
         return listInscription;
+    }
+
+    @Override
+    public Boolean signalerPaiement(Inscription inscription) {
+        Boolean ok = false;
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String sql = " UPDATE `inscrire` SET `Signalisation`= ? WHERE IdInscription = ?  ";
+
+        try {
+            c = MySqlDaoFactory.getInstance().getConnection();
+            ps = c.prepareStatement(sql);
+            ps.setBoolean(1, true);
+            ps.setInt(2, inscription.getIdInscription());
+            ps.executeUpdate();
+            ok = true;
+        } catch (SQLException e) {
+            System.out.println("Probleme avec la requete SQL  getInscritpionById(int choixInscription)");
+            e.printStackTrace();
+        } finally {
+            MySqlDaoFactory.closeResultSet(rs);
+            MySqlDaoFactory.closeStatement(ps);
+            MySqlDaoFactory.closeConnection(c);
+        }
+        return ok;
     }
 }

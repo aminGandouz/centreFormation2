@@ -1,7 +1,6 @@
 package vue;
 
 import java.util.List;
-import model.Formation;
 import model.Inscription;
 import model.Session;
 
@@ -24,19 +23,11 @@ public class VueStagiaire {
         System.out.println("5 -> Modifier ses informations personnelles" + "\n");
         System.out.println("6 -> Se déconnecter" + "\n");
     }
-
-//    public void erreur() {
-//        System.out.println("Erreur! Veuillez faire un choix entre 1 et 4 svp : " + "\n");
-//        System.out.println("" + "\n");
-//        menuStagiaire();
-//    }
     
     public void erreur() {
         System.out.println("Erreur! Veuillez faire un choix valable : " + "\n");
         System.out.println("" + "\n");
     }
-
-
 
     public void listDesInscriptions() {
         System.out.println("Voici la list de vos inscritpion(s) : ");
@@ -44,7 +35,8 @@ public class VueStagiaire {
 
     public void afficheList(List<Inscription> listInscription) {
         for (Inscription inscription : listInscription) {
-            System.out.println(" IdInscription : " + inscription.getIdInscription() + "\n"  + " Cotisation payé : " + inscription.getEstPaye() + "\n");
+            String p = inscription.getEstPaye() == true ? " Vous avez déja payé ": " Vous devez payer la somme de " +inscription.getPrix();
+            System.out.println(" IdInscription : " + inscription.getIdInscription() + "\n"  + p);
         }
     }
 
@@ -86,6 +78,27 @@ public class VueStagiaire {
          System.out.println("\n" + " Vous êtes bien inscrit a la session choisit  " + "\n");
     }
 
- 
+    public void faireChoix() {
+         System.out.println("\n" + " Faites un choix valide  " + "\n");
+    }
 
+    public void listDesInscriptionsVide() {
+        System.out.println("\n" + " Vous n'êtes inscrit à aucune session vous êtes redirigé vers le menu   " + "\n");
+    }
+
+    public void deleteOK() {
+         System.out.println("\n" + " Vous avez bien annuler votre inscription  " + "\n");
+    }
+
+    public void deleteNotOK() {
+       System.out.println("\n" + " L'annulation de votre inscription ne s'est pas fait , contactez le centre de formation   " + "\n");
+    }
+
+    public void paiementOK() {
+        System.out.println("\n" + " La signalisation de votre paiement a bien été effectué   " + "\n");
+    }
+
+    public void paiementNotOK() {
+        System.out.println("\n" + " La signalisation de votre paiement ne s'est pas fait , contactez le centre de formation   " + "\n");
+    }
 }
