@@ -15,9 +15,8 @@ public interface AdminDao {
 
     public void deleteFormateurByName(String formateur);
 
-    public List<Formateur> getFormateurByFormation(Formation form,Session session);
+    public List<Formateur> getFormateurByFormation(Formation form, Session session);
 
-    /////********* A déplacé *******///////// 
     public List<Formateur> getListFormateurs();
 
     public Formateur getFormateurByName(String nomFormateur);

@@ -165,7 +165,7 @@ public class MySqlFormationDao implements FormationDao {
 
 
     @Override
-    public void updateFormation(int idFormation, String nomFormation, float prix, int duree, int maxParticipant,int nbreParticipantMin) {
+    public void updateFormation(Formation formation) {
         Connection c = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -173,15 +173,15 @@ public class MySqlFormationDao implements FormationDao {
         try {
             c = MySqlDaoFactory.getInstance().getConnection();
             ps = c.prepareStatement(sql);
-            ps.setString(1, nomFormation);
-            ps.setFloat(2, prix);
-            ps.setInt(3, duree);
-            ps.setInt(4, maxParticipant);
-            ps.setInt(5, nbreParticipantMin);
-            ps.setInt(6, idFormation);
+            ps.setString(1, formation.getIntitule());
+            ps.setFloat(2, formation.getPrix());
+            ps.setInt(3, formation.getDuree());
+            ps.setInt(4, formation.getMaxParticipant());
+            ps.setInt(5, formation.getNbreParticipantMin());
+            ps.setInt(6, formation.getIdFormation());
             ps.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Probleme avec la requete SQL updateFormation(....) ");
+            System.out.println("Probleme avec la requete SQL updateFormation(Formation formation) ");
         } finally {
             MySqlDaoFactory.closeResultSet(rs);
             MySqlDaoFactory.closeStatement(ps);

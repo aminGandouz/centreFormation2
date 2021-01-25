@@ -4,9 +4,6 @@ import static controler.ControlerUtils.controler;
 import static controler.ControlerUtils.ctrlFormation;
 import static controler.ControlerUtils.model;
 import static controler.ControlerUtils.s;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import model.Admin;
 import model.Formateur;
@@ -16,18 +13,13 @@ import model.Session;
 import vue.Accueil;
 import vue.VueAdmin;
 import vue.VueFormateur;
-import vue.VueLogin;
-import vue.VueStagiaire;
 
 public class ControlerFormation implements ControlerUtils {
 
     private final Accueil vAccueil = new Accueil();
     private final VueAdmin vueAdmin = new VueAdmin();
-    private final VueStagiaire vueStagiaire = new VueStagiaire();
     private final VueFormateur vueFormateur = new VueFormateur();
-    private final VueLogin vueLogin = new VueLogin();
     private List<Formation> listFormations;
-    private List<Session> listSession;
     private List<Session> listSessionFormation;
     private String nom = null;
     private Float prix = null;
@@ -38,7 +30,6 @@ public class ControlerFormation implements ControlerUtils {
     private String dureeString = null;
     private String maxParticipantString = null;
     private String nbreParticipantMinString = null;
-    private final Admin admin = new Admin();
 
     public void gererFormation() {
         vueAdmin.menuGererFormation();
@@ -177,18 +168,13 @@ public class ControlerFormation implements ControlerUtils {
             nbreParticipantMin = Integer.parseInt(nbreParticipantMinString);
             form.setMaxParticipant(nbreParticipantMin);
         }
-        int idUtilisateur = controler.getUserConnecte().getIdUtilisateur();
-        Formation.updateFormation(form.getIdFormation(), nom, prix, duree, maxParticipant, nbreParticipantMin);
+        form.updateFormation();
     }
 
     @Override
     public void erreur() {
         vAccueil.erreur();
 
-    }
-
-    private void getListFormation() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public void rechercherSessionFormateur(Admin admin) {
@@ -251,9 +237,7 @@ public class ControlerFormation implements ControlerUtils {
             case 2:
                 ctrlAdmin.menuAdmin((Admin) controler.getUserConnecte());
                 break;
-
         }
-
     }
 
     public void gererSessionFormation(Formation form) {
@@ -279,7 +263,7 @@ public class ControlerFormation implements ControlerUtils {
             case 4://Afficher les sessions
                 System.out.println(form);
                 listSessionFormation = model.getCentre().getListSessionByIdFormation(form.getIdFormation());
-                vueAdmin.afficherListSessionAvecNbParticipant(listSessionFormation,form);
+                vueAdmin.afficherListSessionAvecNbParticipant(listSessionFormation, form);
                 gererSessionFormation(form);
                 break;
             case 5://Afficher une session
@@ -299,12 +283,12 @@ public class ControlerFormation implements ControlerUtils {
         vueAdmin.faireUnChoixValide();
         Formation f = new Formation();
         // gérer erreur 
-        if(s.hasNextInt()){
+        if (s.hasNextInt()) {
             idFormation = s.nextInt();
-        }else{
+        } else {
             vueAdmin.faireUnChoixValide();
             gererLaSession(listForma);
-        }       
+        }
         f = model.getCentre().getFormationById(idFormation);
         if (f != null) {
             vueAdmin.afficherLaFormation(f);
@@ -365,7 +349,7 @@ public class ControlerFormation implements ControlerUtils {
 
     private void editerSession(Formation form, Session sess) {
         int choixFormateur = 0;
-        int choixlocal = 0 ;
+        int choixlocal = 0;
         List<Formateur> listFormateurDispo = model.getCentre().getFormateurByFormation(form, sess);
         vueFormateur.afficheListFormateur(listFormateurDispo);
         if (listFormateurDispo.isEmpty()) {
@@ -391,11 +375,11 @@ public class ControlerFormation implements ControlerUtils {
         List<Local> listLocauxDispo = model.getCentre().getLocauxDispo(sess);
         vueAdmin.afficherListLocaux(listLocauxDispo);
         vueAdmin.faireUnChoixValide();
-        if(s.hasNextInt()){
+        if (s.hasNextInt()) {
             choixlocal = s.nextInt();
-        }else{
+        } else {
             vueAdmin.erreurLocal();
-            editerSession(form,sess);
+            editerSession(form, sess);
         }
         Local local = new Local();
         local = model.getCentre().getLocalById(choixlocal);

@@ -16,22 +16,6 @@ public class Formation {
     private List<Session> listSession;
     private List<Session> listSessionByFormation;
 
-    public List<Session> getListSessionByFormation() {
-        return getListSessionByNameFormation(intitule);
-    }
-
-    public void setListSessionByFormation(List<Session> listSessionByFormation) {
-        this.listSessionByFormation = listSessionByFormation;
-    }
-
-    public List<Session> getListSession() {
-        return getAllSession();
-    }
-
-    public void setListSession(List<Session> listSession) {
-        this.listSession = listSession;
-    }
-
     public Formation() {
     }
 
@@ -100,7 +84,25 @@ public class Formation {
         this.nbreParticipantMin = nbreParticipantMin;
     }
 
-    // laisser ici 
+    public List<Session> getListSessionByFormation() {
+        return getListSessionByNameFormation(intitule);
+    }
+
+    public void setListSessionByFormation(List<Session> listSessionByFormation) {
+        this.listSessionByFormation = listSessionByFormation;
+    }
+
+    public List<Session> getListSession() {
+        return getAllSession();
+    }
+
+    public void setListSession(List<Session> listSession) {
+        this.listSession = listSession;
+    }
+
+    /**
+     * ***** FORMATION *********
+     */
     public void ajoutFormation() {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         FormationDao formationDao = factory.createFormationDao();
@@ -113,13 +115,12 @@ public class Formation {
         formationDao.effacerFormation(formation);
     }
 
-    public static void updateFormation(int idFormation, String nomFormation, float prix, int duree, int maxParticipant, int nbreParticipantMin) {
+    public void updateFormation() {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         FormationDao formationDao = factory.createFormationDao();
-        formationDao.updateFormation(idFormation, nomFormation, prix, duree, maxParticipant, nbreParticipantMin);
+        formationDao.updateFormation(this);
     }
-
-    //////// a mettre dans la classe centre //////// 
+ 
     public Formation getFormationAvecNom(String nomFormation) {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         FormationDao formationDao = factory.createFormationDao();
@@ -129,12 +130,14 @@ public class Formation {
     ////// changer car la methode se trouve dans formation et session //////
     ////// changer car la methode se trouve dans formation et session //////
     ////// changer car la methode se trouve dans formation et session //////
+    
+    /**
+     * ***** SESSION *********
+     */
     public List<Session> getListSessionAvecNom(Formateur formateur) {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         SessionDao sessionDao = factory.createSessionDao();
         return sessionDao.getListSessionByNameFormateur(formateur.getNom());
-//        FormationDao formationDao = factory.createFormationDao();
-//        return formationDao.getListSessionAvecNom(formateur);
     }
 
     public List<Session> getAllSession() {
@@ -153,5 +156,5 @@ public class Formation {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         SessionDao sessionDao = factory.createSessionDao();
         return sessionDao.getListSessionByNameFormation(nameFormation);
-    }    
+    }
 }

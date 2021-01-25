@@ -304,8 +304,6 @@ public class ControlerStagiaire implements ControlerUtils {
             } else {
                 menusStagiaire(stagiaire);
             }
-
         }
-
     }
 }

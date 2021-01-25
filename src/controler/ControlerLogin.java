@@ -13,7 +13,6 @@ public class ControlerLogin implements ControlerUtils {
 
     private final VueLogin vueLogin = new VueLogin();
     private final VueAdmin vueAdmin = new VueAdmin();
-    private final VueStagiaire vueStagiaire = new VueStagiaire();
     private String login = null, password = null;
 
     @SuppressWarnings("null")
@@ -55,7 +54,6 @@ public class ControlerLogin implements ControlerUtils {
             vueLogin.erreurUser();
             controler.start();
         }
-
     }
 
     @Override

@@ -17,7 +17,7 @@ public class ControlerSession implements ControlerUtils {
     private final VueFormateur vueFormateur = new VueFormateur();
     private Session session = new Session();
     private Formation formation = new Formation();
-    private Formateur formateur = new Formateur();
+    private Formateur f = new Formateur();
     private Local local = new Local();
 
     @Override
@@ -48,7 +48,7 @@ public class ControlerSession implements ControlerUtils {
         }
         vueAdmin.faireUnChoixValide();
         int choixFormateur = s.nextInt();
-        Formateur f = new Formateur();
+        f = new Formateur();
         f = (Formateur) model.getCentre().getUserById(choixFormateur);
         if (f != null) {
             session.setFormateur(f);
@@ -61,7 +61,7 @@ public class ControlerSession implements ControlerUtils {
         vueAdmin.afficherListLocaux(listLocauxDispo);
         vueAdmin.faireUnChoixValide();
         int choixlocal = s.nextInt();
-        Local local = new Local();
+        local = new Local();
         local = model.getCentre().getLocalById(choixlocal);
         if (local != null) {
             session.setLocal(local);
@@ -77,10 +77,10 @@ public class ControlerSession implements ControlerUtils {
         vueAdmin.afficherListSession(listSession);
         vueAdmin.faireUnChoixValide();
         int choixSession = s.nextInt();
-        Session sess = new Session();
-        sess = (Session) model.getSess().getSessionByIdSession(choixSession);
-        if (sess != null) {
-            session.deleteSessionById(sess.getIdSession());
+        session = new Session();
+        session = (Session) model.getSess().getSessionByIdSession(choixSession);
+        if (session != null) {
+            session.deleteSessionById(session.getIdSession());
         } else {
             vueAdmin.erreurSession();
             deleteSession(form);

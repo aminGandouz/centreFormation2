@@ -11,9 +11,8 @@ public interface FormationDao {
 
     public void effacerFormation(String formation);
 
-    public void updateFormation(int idFormation, String nomFormation, float prix, int duree, int maxParticipant, int nbreParticipantMin);
+    public void updateFormation(Formation formation);
 
-   ////////// ********** A déplacé ***********//////////:
     public List<Session> getListSessionAvecNom(Formateur formateur);
 
     public List<Formation> getListFormationAvecNom(String nomFormation);

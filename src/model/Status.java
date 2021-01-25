@@ -46,15 +46,15 @@ public class Status {
         this.reduction = reduction;
     }
 
-    @Override
-    public String toString() {
-        return "Status{" + "idStatus=" + idStatus + ", nomStatus=" + nomStatus + '}';
-    }
-
     public Boolean ajoutStatus(Status newStatus) {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         CentreDao centreDao = factory.createCentreDao();
         return centreDao.ajoutStatus(newStatus);
+    }
+
+    @Override
+    public String toString() {
+        return "Status{" + "idStatus=" + idStatus + ", nomStatus=" + nomStatus + '}';
     }
 
 }

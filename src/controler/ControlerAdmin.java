@@ -16,6 +16,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import vue.VueAdmin;
 import vue.VueFormateur;
 import vue.VueLogin;
+// import static controler.ControlerUtils.*;
 
 public class ControlerAdmin implements ControlerUtils {
 
@@ -34,6 +35,7 @@ public class ControlerAdmin implements ControlerUtils {
     /**
      * ***** All methods ******
      */
+    
     public void menuAdmin(Admin admin) {
         vueAdmin.presentationVueAdmin();
         vueAdmin.menuAdmin();
@@ -76,6 +78,9 @@ public class ControlerAdmin implements ControlerUtils {
 
     }
 
+    /**
+     * *********** FORMATEUR *********************
+     */
     private void gererFormateur(Admin admin) {
         vueAdmin.menusGererFormateur();
         int choixDuMenus = choixMenus(1, 7);
@@ -122,7 +127,7 @@ public class ControlerAdmin implements ControlerUtils {
         do {
             vueAdmin.entrerNom();
             nom = s.nextLine();
-        } while (nom == null || nom.trim().isEmpty());// trim retire les espaces avt et apres et Si ce qui reste est vide => le string de base n'avait que des espaces 
+        } while (nom == null || nom.trim().isEmpty());
         formateur.setNom(nom);
 
         do {
@@ -163,6 +168,7 @@ public class ControlerAdmin implements ControlerUtils {
         } while (password == null || password.trim().isEmpty());
         String hp = BCrypt.hashpw(password, BCrypt.gensalt());
         formateur.setPassword(hp);
+
         formateur.ajoutFormateur();
     }
 
@@ -170,10 +176,12 @@ public class ControlerAdmin implements ControlerUtils {
         vueAdmin.effacerFormateur();
         String formateur = null;
         s.nextLine();
+
         do {
             formateur = s.nextLine();
         } while (formateur == null || formateur.trim().isEmpty());
         Boolean formateurExist = model.getCentre().isFormateurExist(formateur);
+
         if (!formateurExist) {
             VueFormateur.FormateurNotExist();
             effacerFormateur();
@@ -241,22 +249,17 @@ public class ControlerAdmin implements ControlerUtils {
             } while (password == null || password.trim().isEmpty());
             String hp = BCrypt.hashpw(password, BCrypt.gensalt());
             formateur.setPassword(hp);
+
             formateur.updateFormateur();
         }
     }
 
-    /**
-     * ***** Errors method ******
-     */
-    @Override
-    public void erreur() {
-        vueAdmin.erreur();
-    }
-
+    /* TODO vérifier le do while */
     private void CommuniquerFormateurPrestations() {
         s.nextLine();
         String nomFormateur;
         List<Session> listSessionFormateur = new ArrayList<>();
+
         do {
             vueAdmin.entrerNom();
             nomFormateur = s.nextLine();
@@ -274,42 +277,69 @@ public class ControlerAdmin implements ControlerUtils {
 
     }
 
-    private void displayAllSessionByFormation(Admin admin) {
-        Integer choixDeLaFormation = null;
-        List<Formation> listForm = model.getCentre().getListFormations();
-        vueAdmin.afficherFormations(listForm);
-        vueAdmin.faireUnChoixValide();
-        if (s.hasNextInt()) {
-            choixDeLaFormation = s.nextInt();
-        }
-        List<Session> listSession = model.getCentre().getListSessionDispoByIdFormation(choixDeLaFormation);
-        if (null == listSession) {
-            vueAdmin.pasDeSession();
-        }
-        menuAdmin(admin);
+    private void deleteFormationDuFormateur(Admin admin) {
+        vueAdmin.deleteFormationDuFormateur();
+        List<Formateur> listFormateurs3 = model.getCentre().getListFormateurs();
+        vueAdmin.afficherFormateurs(listFormateurs3);
 
-        /////////// !!!!!!!!!!!!! gérer le compte du nbre de participants 
+        vueAdmin.faireUnChoixValide();
+        int idFormateur = s.nextInt();
+        Formateur f = (Formateur) model.getCentre().getUserById(idFormateur);
+
+        if (f == null) {
+            vueAdmin.erreur();
+            deleteFormationDuFormateur(admin);
+        } else {
+            vueAdmin.choixDeLaFormation();
+            List<Formation> listFormationDuFormateur = model.getCentre().getListDuFormateur(f.getIdUtilisateur());
+            vueAdmin.afficherFormations(listFormationDuFormateur);
+            
+            if (listFormationDuFormateur.isEmpty()) {
+                vueAdmin.listFormationVidePourFormateur();
+            }
+            
+            int choixDeLaFormation = s.nextInt();
+            Formation existe = model.getCentre().getFormationById(choixDeLaFormation);
+            
+            if (existe == null) {
+                deleteFormationDuFormateur(admin);
+            } else {
+                Boolean formationDelete = model.getCentre().deleteFormationDuFormateur(f.getIdUtilisateur(), existe.getIdFormation());
+                
+                if (formationDelete) {
+                    vueAdmin.formationDelete();
+                } else {
+                    vueAdmin.formationNoDelete();
+                }
+                
+                gererFormateur(admin);
+            }
+        }
     }
 
     private void ajoutFormationAuFormateur(Admin admin) {
-
         vueAdmin.ajouterFormationAuFormateur();
         List<Formateur> listFormateurs3 = model.getCentre().getListFormateurs();
         vueAdmin.afficherFormateurs(listFormateurs3);
         vueAdmin.faireUnChoixValide();
+        
         int idFormateur = s.nextInt();
         Formateur f = (Formateur) model.getCentre().getUserById(idFormateur);
+        
         if (null == f) {
             vueAdmin.erreur();
             ajoutFormationAuFormateur(admin);
         } else {
             List<Formation> listFormationDispoPOurFormateur = model.getCentre().getListFormationDispoPOurFormateur(f.getIdUtilisateur());
             vueAdmin.afficherFormations(listFormationDispoPOurFormateur);
+            
             if (listFormationDispoPOurFormateur.isEmpty()) {
                 vueAdmin.listFormationVide();
             }
+            
             int choixDeLaFormation = s.nextInt();
             Formation existe = model.getCentre().getFormationById(choixDeLaFormation);
+            
             if (null == existe) {
                 ajoutFormationAuFormateur(admin);
             } else {
@@ -320,39 +350,9 @@ public class ControlerAdmin implements ControlerUtils {
         }
     }
 
-    private void deleteFormationDuFormateur(Admin admin) {
-        vueAdmin.deleteFormationDuFormateur();
-        List<Formateur> listFormateurs3 = model.getCentre().getListFormateurs();
-        vueAdmin.afficherFormateurs(listFormateurs3);
-        vueAdmin.faireUnChoixValide();
-        int idFormateur = s.nextInt();
-        Formateur f = (Formateur) model.getCentre().getUserById(idFormateur);
-        if (f == null) {
-            vueAdmin.erreur();
-            deleteFormationDuFormateur(admin);
-        } else {
-            vueAdmin.choixDeLaFormation();
-            List<Formation> listFormationDuFormateur = model.getCentre().getListDuFormateur(f.getIdUtilisateur());
-            vueAdmin.afficherFormations(listFormationDuFormateur);
-            if (listFormationDuFormateur.isEmpty()) {
-                vueAdmin.listFormationVidePourFormateur();
-            }
-            int choixDeLaFormation = s.nextInt();
-            Formation existe = model.getCentre().getFormationById(choixDeLaFormation);
-            if (existe == null) {
-                deleteFormationDuFormateur(admin);
-            } else {
-                Boolean formationDelete = model.getCentre().deleteFormationDuFormateur(f.getIdUtilisateur(), existe.getIdFormation());
-                if (formationDelete) {
-                    vueAdmin.formationDelete();
-                } else {
-                    vueAdmin.formationNoDelete();
-                }
-                gererFormateur(admin);
-            }
-        }
-    }
-
+    /**
+     * *********** STATUS *********************
+     */
     private void gererStatusEtudiants(Admin admin) {
         vueAdmin.statusEtudiants();
         s.nextLine();
@@ -372,28 +372,37 @@ public class ControlerAdmin implements ControlerUtils {
         newStatus.setReduction(reduc);
 
         Boolean ajoutStatusOk = model.getStatus().ajoutStatus(newStatus);
+        
         if (ajoutStatusOk) {
             vueAdmin.ajoutStatusOk();
         } else {
             vueAdmin.ajoutStatusNotOk();
         }
+        
         menuAdmin(admin);
     }
 
+    /**
+     * *********** LOCAUX *********************
+     */
     private void gererLocaux(Admin admin) {
         Local local = new Local();
         s.nextLine();
+        
         do {
             vueAdmin.entrerNom();
             nom = s.nextLine();
         } while (nom == null || nom.trim().isEmpty());
         local.setNomLocal(nom);
+        
         Boolean ok = model.getCentre().ajoutLocal(local);
+        
         if (ok) {
             vueAdmin.ajoutLocalOK();
         } else {
             vueAdmin.ajoutLocalNotOk();
         }
+        
         menuAdmin(admin);
     }
 
@@ -401,34 +410,41 @@ public class ControlerAdmin implements ControlerUtils {
         s.nextLine();
         int choix = 0;
         Inscription inscription = null;
+        
         vueAdmin.listDesInscriptions();
         List<Inscription> listInscription = model.getCentre().getListDesInscriptions();
+        
         if (listInscription.isEmpty()) {
             vueAdmin.listInscriptionVide();
             menuAdmin(admin);
         } else {
             vueAdmin.afficheList(listInscription);
+            
             do {
                 vueAdmin.faireUnChoixValide();
                 if (s.hasNextInt()) {
                     choix = s.nextInt();
                     inscription = model.getCentre().getInscritpionById(choix);
-                    if(inscription == null){
+                    
+                    if (inscription == null) {
                         gererPaiementInscription(admin);
                     }
-                }else{
+                } else {
                     gererPaiementInscription(admin);
                 }
             } while (!model.getCentre().inscriptionExist(listInscription, inscription));
             inscription.updateEstPaye();
-            
+
             vueAdmin.paiementOk();
             menuAdmin(admin);
         }
     }
-}
 
-//        while (!prixString.matches("\\d+") || Integer.parseInt(prixString) <= 0);
-//        prix = Integer.parseInt(prixString);
-//"^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$"
-//"^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$"
+    /**
+     * ***** Errors method ******
+     */
+    @Override
+    public void erreur() {
+        vueAdmin.erreur();
+    }
+}

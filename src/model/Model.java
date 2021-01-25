@@ -56,12 +56,6 @@ public class Model {
     public Status getStatus() {
         return status;
     }
-    
-    
-//    ////////// verifier les 2 méthodes ///////////
-//    public List<Inscription> getListDesInscriptions(int idUtilisateur) {
-//        return stagiaire.getListDesInscriptions(idUtilisateur);
-//    }
 
     public List<Formation> getListFormations() {
         return centre.getListFormations();

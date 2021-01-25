@@ -32,6 +32,7 @@ public class Centre {
     /**
      * ***** Getters and Setters ******
      */
+    
     public Formation getFormation() {
         return formation;
     }
@@ -86,6 +87,7 @@ public class Centre {
     /**
      * ***** FORMATION ******
      */
+    
     public List<Formation> getListFormations() {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         CentreDao centreDao = factory.createCentreDao();

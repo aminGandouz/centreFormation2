@@ -12,15 +12,6 @@ public class Stagiaire extends Utilisateur {
     private Boolean estPaye;
     private List<Inscription> listInscription;
 
-    public List<Inscription> getListInscription() {
-        listInscription = getListDesInscriptions();
-        return listInscription;
-    }
-
-    public void setListInscription(List<Inscription> listInscription) {
-        this.listInscription = listInscription;
-    }
-
     public Stagiaire() {
     }
 
@@ -58,6 +49,15 @@ public class Stagiaire extends Utilisateur {
         this.estPaye = estPaye;
     }
 
+    public List<Inscription> getListInscription() {
+        listInscription = getListDesInscriptions();
+        return listInscription;
+    }
+
+    public void setListInscription(List<Inscription> listInscription) {
+        this.listInscription = listInscription;
+    }
+
     public void ajoutStagiaire() {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         StagiaireDao stagiaireDao = factory.createStagiaireDao();
@@ -82,10 +82,6 @@ public class Stagiaire extends Utilisateur {
         return utilisateurDao.getListFormationAvecNom(nomFormation);
     }
 
-    public String toString() {
-        return super.toString() + "Stagiaire{" + "status=" + status + ", estLoge=" + estLoge + ", estPaye=" + estPaye + ", listInscription=" + listInscription + '}';
-    }
-
     public Inscription getInscritpionById(int choixInscription) {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         StagiaireDao stagiaireDao = factory.createStagiaireDao();
@@ -108,6 +104,10 @@ public class Stagiaire extends Utilisateur {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         StagiaireDao stagiaireDao = factory.createStagiaireDao();
         return stagiaireDao.signalerPaiement(inscription);
+    }
+
+    public String toString() {
+        return super.toString() + "Stagiaire{" + "status=" + status + ", estLoge=" + estLoge + ", estPaye=" + estPaye + ", listInscription=" + listInscription + '}';
     }
 
 }

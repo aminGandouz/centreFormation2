@@ -62,9 +62,6 @@ public class Controler implements ControlerUtils {
         }
     }
 
-    /**
-     * ***** Case 2 -> from methode start() ******
-     */
     public void choixCatalogue() {
         String nomFormation = null;
         vAccueil.choixDuCatalogue();
