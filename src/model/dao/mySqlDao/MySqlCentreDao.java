@@ -38,10 +38,11 @@ public class MySqlCentreDao implements CentreDao {
         Connection c = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String sql = " select IdFormation,Intitule,Prix,Duree,MaxParticipant,NbreParticipantMin from formation ";
+        String sql = " select IdFormation,Intitule,Prix,Duree,MaxParticipant,NbreParticipantMin from formation where enable = ? ";
         try {
             c = MySqlDaoFactory.getInstance().getConnection();
             ps = c.prepareStatement(sql);
+            ps.setBoolean(1,true);
             rs = ps.executeQuery();
             while (rs.next()) {
                 Formation formation = new Formation(rs.getInt(1), rs.getString(2), rs.getFloat(3), rs.getInt(4), rs.getInt(5), rs.getInt(6));
@@ -533,12 +534,12 @@ public class MySqlCentreDao implements CentreDao {
         Connection c = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String sql = " UPDATE `session` SET `enable`= ? where DATEDIFF(now(),session.DateFin)>? ";
+        String sql = " call proc_cleanDB() ";
         try {
             c = MySqlDaoFactory.getInstance().getConnection();
             ps = c.prepareStatement(sql);
-            ps.setBoolean(1, false);
-            ps.setInt(2, 365);
+//            ps.setBoolean(1, false);
+//            ps.setInt(2, 365);
             ps.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Probleme avec la requete SQL cleanDB()");
