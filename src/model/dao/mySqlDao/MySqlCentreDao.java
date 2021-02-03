@@ -550,5 +550,4 @@ public class MySqlCentreDao implements CentreDao {
             MySqlDaoFactory.closeConnection(c);
         }
     }
-
 }
