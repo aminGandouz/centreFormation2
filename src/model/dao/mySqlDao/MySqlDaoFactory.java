@@ -29,11 +29,16 @@ public class MySqlDaoFactory extends AbstractDaoFactory {
         return instance;
     }
 
+    @Override
+    public CentreDao createCentreDao() {
+        return MySqlCentreDao.getInstance();
+    }
+
     public Connection getConnection() {
         Connection c = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            c = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/centreformation", "root", "");
+            c = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/centreformation", "carmelo", "carmelo");
         } catch (ClassNotFoundException cnfe) {
             cnfe.printStackTrace();
         } catch (SQLException e) {
@@ -70,11 +75,6 @@ public class MySqlDaoFactory extends AbstractDaoFactory {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public CentreDao createCentreDao() {
-        return MySqlCentreDao.getInstance();
     }
 
     @Override

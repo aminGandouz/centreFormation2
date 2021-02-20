@@ -226,17 +226,17 @@ public class MySqlSessionDao implements SessionDao {
         }
     }
 
-    /* TODO faire un update au lieu de delete */
     @Override
     public void deleteSessionById(Integer idSession) {
         Connection c = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String sql = "DELETE FROM `session` WHERE `IdSession` = ? ";
+        String sql = " UPDATE `session` SET `enable`= ? WHERE session.IdSession = ? ";
         try {
             c = MySqlDaoFactory.getInstance().getConnection();
             ps = c.prepareStatement(sql);
-            ps.setInt(1, idSession);
+            ps.setBoolean(1, false);
+            ps.setInt(2, idSession);
             ps.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Probleme avec la requete SQL deleteSessionById(Integer idSession)");
@@ -290,7 +290,6 @@ public class MySqlSessionDao implements SessionDao {
         return listSession;
     }
 
-    /* TODO vérifier la requete */
     @Override
     public List<Session> getListSessionDispoByIdFormation(Integer choixDeLaFormation) {
         List<Session> listSession = new ArrayList<>();

@@ -1,7 +1,10 @@
-
 package model;
 
+import model.dao.AbstractDaoFactory;
+import model.dao.CentreDao;
+
 public class Local {
+
     private Integer idLocal;
     private String nomLocal;
 
@@ -28,6 +31,11 @@ public class Local {
     public void setNomLocal(String nomLocal) {
         this.nomLocal = nomLocal;
     }
-    
+
+    public Boolean ajoutLocal(Local local) {
+        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
+        CentreDao centreDao = factory.createCentreDao();
+        return centreDao.ajoutLocal(local);
+    }
+
 }
-         

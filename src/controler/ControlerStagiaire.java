@@ -4,6 +4,7 @@ import static controler.ControlerUtils.controler;
 import static controler.ControlerUtils.ctrlStagiaire;
 import static controler.ControlerUtils.model;
 import static controler.ControlerUtils.s;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import model.Inscription;
 import model.Session;
 import model.Stagiaire;
 import model.Status;
+import model.Utilisateur;
 import org.mindrot.jbcrypt.BCrypt;
 import vue.Accueil;
 import vue.VueLogin;
@@ -24,6 +26,8 @@ public class ControlerStagiaire implements ControlerUtils {
     private final Accueil vAccueil = new Accueil();
     private String nom = null, prenom = null, adresse = null, telephone = null, email = null, login = null, password = null, role = "stagiaire", status = null;
     private Stagiaire stagiaire = new Stagiaire();
+    private Boolean emailExist = false;
+    private Boolean loginExist = false;
 
     public void menusStagiaire(Stagiaire stagiaire) {
         vueStagiaire.presentationVueStagiaire();
@@ -68,9 +72,6 @@ public class ControlerStagiaire implements ControlerUtils {
     public int getSessionId(List<Session> listSession) {
         int choixDuMenus = 0;
         Map<Integer, String> mapStatus = new HashMap<>();
-//        for (Session session : listSession) {
-//            mapStatus.put(session.getIdSession(), session.getFormation().getIntitule());
-//        }
         if (s.hasNextInt()) {
             choixDuMenus = s.nextInt();
             if (mapStatus.containsKey(choixDuMenus)) {
@@ -81,7 +82,7 @@ public class ControlerStagiaire implements ControlerUtils {
         getSessionId(listSession);
         return choixDuMenus;
     }
-    /* TODO mettre un do while */
+
     private void inscriptionSession(Stagiaire stagiaire) {
         s.nextLine();
         List<Formation> listFormation = model.getCentre().getListFormations();
@@ -97,7 +98,8 @@ public class ControlerStagiaire implements ControlerUtils {
             } else {
                 vueStagiaire.afficheListSession(listSession);
                 vueStagiaire.taperIdSession();
-                if (s.hasNextInt()) {
+                s.nextLine();
+                    checkInt();
                     Integer idSess = s.nextInt();
                     Session sess = model.getSess().getSessionByIdSession(idSess);
                     if (sess == null) {
@@ -116,7 +118,7 @@ public class ControlerStagiaire implements ControlerUtils {
                             ctrlStagiaire.menusStagiaire(stagiaire);
                         }
                     }
-                }
+         
             }
         } else {
             inscriptionSession(stagiaire);
@@ -146,18 +148,23 @@ public class ControlerStagiaire implements ControlerUtils {
             telephone = s.nextLine();
         } while (telephone == null || telephone.trim().isEmpty());
         stagiaire.setTelephone(telephone);
+        
         do {
-            vueLogin.entrerEmail();
-            email = s.nextLine();
-        } while (!email.matches("^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$") || email == null || email.trim().isEmpty());
-        //"^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$"
-        //"^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$"
+            do {
+                vueLogin.entrerEmail();
+                email = s.nextLine();
+            } while (!email.matches("^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$")
+                    || email == null
+                    || email.trim().isEmpty());
+        } while (model.getCentre().ifEmailExist(email) != null);
         stagiaire.setEmail(email);
+        
         do {
             vueLogin.entrerLogin();
             login = s.nextLine();
-        } while (login == null || login.trim().isEmpty());
+        } while (login == null || login.trim().isEmpty() || model.getCentre().getUserByLogin(login) != null);
         stagiaire.setLogin(login);
+        
         do {
             vueLogin.entrerPassword();
             password = s.nextLine();
@@ -198,28 +205,57 @@ public class ControlerStagiaire implements ControlerUtils {
         } while (telephone == null || telephone.trim().isEmpty());
         stagiaire2.setTelephone(telephone);
         do {
-            vueLogin.entrerEmail();
-            email = s.nextLine();
-        } while (!email.matches("^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$") || email == null || email.trim().isEmpty());
-        //"^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$"
-        //"^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$"
+            do {
+                vueLogin.entrerEmail();
+                email = s.nextLine();
+            } while (!email.matches("^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$")
+                    || email == null
+                    || email.trim().isEmpty());
+            if (model.getCentre().ifEmailExist(email) != null) {
+                Utilisateur user = model.getCentre().ifEmailExist(email);
+                if (user.getIdUtilisateur() == stagiaire2.getIdUtilisateur()) {
+                    emailExist = true;
+                }
+            } else {
+                emailExist = true;
+            }
+        } while (!emailExist);
         stagiaire2.setEmail(email);
+        
         do {
-            vueLogin.entrerLogin();
-            login = s.nextLine();
-        } while (login == null || login.trim().isEmpty());
+            do {
+                vueLogin.entrerLogin();
+                login = s.nextLine();
+            } while (login == null || login.trim().isEmpty());
+            if (model.getCentre().getUserByLogin(login) != null) {
+                Utilisateur user = model.getCentre().getUserByLogin(login);
+                if (user.getIdUtilisateur() == stagiaire2.getIdUtilisateur()) {
+                    loginExist = true;
+                }
+            } else {
+                loginExist = true;
+            }
+        } while (!loginExist);
+
         stagiaire2.setLogin(login);
+
         do {
             vueLogin.entrerPassword();
             password = s.nextLine();
-        } while (password == null || password.trim().isEmpty());
+        } while (password
+                == null || password.trim()
+                        .isEmpty());
         String hp = BCrypt.hashpw(password, BCrypt.gensalt());
+
         stagiaire2.setPassword(hp);
 
         int idStatus = getStatusId();
         Status status = new Status();
+
         status.setIdStatus(idStatus);
+
         stagiaire2.setStatus(status);
+
         stagiaire2.updateStagiaire();
     }
 
@@ -230,6 +266,7 @@ public class ControlerStagiaire implements ControlerUtils {
         for (Status status : listStatus) {
             mapStatus.put(status.getIdStatus(), status.getNomStatus());
         }
+        Collections.sort(listStatus, Status.ComparatorId);
         vueLogin.afficheListStatus(listStatus);
         vueLogin.entrerStatus();
         if (s.hasNextInt()) {

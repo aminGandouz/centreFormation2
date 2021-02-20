@@ -27,7 +27,7 @@ public class MySqlUtilisateurDao implements UtilisateurDao {
 
     private MySqlUtilisateurDao() {
     }
-    
+
     @Override
     public Utilisateur getAuthentification(String login, String password) {
         Connection c = null;
@@ -199,16 +199,101 @@ public class MySqlUtilisateurDao implements UtilisateurDao {
         }
         return user;
     }
+
+    @Override
+    public Utilisateur ifEmailExist(String email) {
+        Utilisateur u = null;
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String sql = " select IdUtilisateur,Nom,Prenom,Adresse,Telephone,Email,Login,Password,IdRole,DenomRole,IdStatus,DenomStatus from utilisateur left join roles on utilisateur.Role = roles.IdRole \n"
+                + " left join Status on utilisateur.Status = Status.IdStatus WHERE utilisateur.Email = ? ";
+        try {
+            c = MySqlDaoFactory.getInstance().getConnection();
+            ps = c.prepareStatement(sql);
+            ps.setString(1, email);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                switch (rs.getInt(9)) {
+                    case 1://admin
+                        u = new Admin(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
+                                rs.getString(5), rs.getString(6),
+                                rs.getString(7), rs.getString(8),
+                                new Role(rs.getInt(9), rs.getString(10)));
+                        break;
+                    case 2://stagiaire
+                        u = new Stagiaire(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
+                                rs.getString(5), rs.getString(6),
+                                rs.getString(7), rs.getString(8),
+                                new Role(rs.getInt(9), rs.getString(10)),
+                                new Status(rs.getInt(11), rs.getString(12)));
+                        break;
+                    case 3://formateur
+                        u = new Formateur(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
+                                rs.getString(5), rs.getString(6),
+                                rs.getString(7), rs.getString(8),
+                                new Role(rs.getInt(9), rs.getString(10)));
+                        break;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Probleme avec la requete SQL  getUserById(int idUser)");
+            e.printStackTrace();
+        } finally {
+            MySqlDaoFactory.closeResultSet(rs);
+            MySqlDaoFactory.closeStatement(ps);
+            MySqlDaoFactory.closeConnection(c);
+        }
+        return u;
+    }
+
+    @Override
+    public Utilisateur getUserByLogin(String login) {
+        Utilisateur u = null;
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String sql = " select IdUtilisateur,Nom,Prenom,Adresse,Telephone,Email,Login,Password,IdRole,DenomRole,IdStatus,DenomStatus from utilisateur left join roles on utilisateur.Role = roles.IdRole \n"
+                + " left join Status on utilisateur.Status = Status.IdStatus WHERE utilisateur.Login = ? ";
+        try {
+            c = MySqlDaoFactory.getInstance().getConnection();
+            ps = c.prepareStatement(sql);
+            ps.setString(1, login);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                switch (rs.getInt(9)) {
+                    case 1://admin
+                        u = new Admin(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
+                                rs.getString(5), rs.getString(6),
+                                rs.getString(7), rs.getString(8),
+                                new Role(rs.getInt(9), rs.getString(10)));
+                        break;
+                    case 2://stagiaire
+                        u = new Stagiaire(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
+                                rs.getString(5), rs.getString(6),
+                                rs.getString(7), rs.getString(8),
+                                new Role(rs.getInt(9), rs.getString(10)),
+                                new Status(rs.getInt(11), rs.getString(12)));
+                        break;
+                    case 3://formateur
+                        u = new Formateur(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
+                                rs.getString(5), rs.getString(6),
+                                rs.getString(7), rs.getString(8),
+                                new Role(rs.getInt(9), rs.getString(10)));
+                        break;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Probleme avec la requete SQL  getUserByLogin(String login) ");
+            e.printStackTrace();
+        } finally {
+            MySqlDaoFactory.closeResultSet(rs);
+            MySqlDaoFactory.closeStatement(ps);
+            MySqlDaoFactory.closeConnection(c);
+        }
+        return u;
+    }
+
 }
-
-//    static {
-//        instance = new MySqlUtilisateurDao();
-//    }
-//        String sql2 = "select formation.intitule as intit ,session.dateDebut as dt , inscrire.estPaye as estPaye from utilisateur \n"
-//                + "join inscrire on utilisateur.idUtilisateur = inscrire.idUtilisateur \n"
-//                + "join session on session.idSession = inscrire.idSession \n"
-//                + "join formation on formation.idFormation = session.idFormation\n"
-//                + "where utilisateur.idUtilisateur = ?";
-
-
-//         (Session) MySqlSessionDao.getInstance().getSessionByIdSession(rs.getInt(2))

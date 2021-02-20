@@ -56,9 +56,6 @@ public class MySqlInscriptionDao implements InscriptionDao {
                 Double reduc = rs.getDouble(1);
 
                 float total = (float) (price - ((price / 100) * reduc));
-                System.out.println(reduc);
-                System.out.println(price);
-                System.out.println(total);
                 ps = c.prepareStatement(sql);
                 ps.setInt(1, stagiaire.getIdUtilisateur());
                 ps.setInt(2, session.getIdSession());

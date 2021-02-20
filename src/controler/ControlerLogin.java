@@ -7,7 +7,6 @@ import model.Utilisateur;
 import org.mindrot.jbcrypt.BCrypt;
 import vue.VueAdmin;
 import vue.VueLogin;
-import vue.VueStagiaire;
 
 public class ControlerLogin implements ControlerUtils {
 

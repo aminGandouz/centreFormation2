@@ -403,12 +403,20 @@ public class VueAdmin {
         for (Inscription inscription : listInscription) {
             System.out.println(" IdInscription : " + inscription.getIdInscription() +
                     "\n" + " EstPaye "+ inscription.getEstPaye() + 
-                    "\n" + " Signalisation" + inscription.getSignalisation() + 
+                    "\n" + " Signalisation  " + inscription.getSignalisation() + 
                     "\n" + " Prix "+inscription.getPrix() +"\n"  );
         }
     }
 
     public void paiementOk() {
         System.out.println("\n" + " Le paiment est bien effectué   " + "\n");
+    }
+
+    public void erreurNumberString() {
+         System.out.println("\n" + " Ce n'est pas un nombre , vueillez entrer un nombre svp !!!!  " + "\n");
+    }
+
+    public void notDelete(Formation formation) {
+        System.out.println("\n" + "La formation " + formation.getIntitule() + " n'a pu être effacé , vérifié s'il esiste une session futur pour cette formation !!!!!!  " + "\n");
     }
 }

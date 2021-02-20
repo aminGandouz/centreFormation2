@@ -10,9 +10,14 @@ public interface UtilisateurDao {
 
     public Utilisateur authentificationLogin(String loginString);
 
-    //////////: ************ A déplacé ************////////////::
+    
     public List<Inscription> getListFormationAvecNom(String nomFormation);
 
     public Utilisateur getUserById(int idUser);
+
+    public Utilisateur ifEmailExist(String email);
+
+    public Utilisateur getUserByLogin(String login);
+
 
 }

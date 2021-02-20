@@ -538,8 +538,6 @@ public class MySqlCentreDao implements CentreDao {
         try {
             c = MySqlDaoFactory.getInstance().getConnection();
             ps = c.prepareStatement(sql);
-//            ps.setBoolean(1, false);
-//            ps.setInt(2, 365);
             ps.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Probleme avec la requete SQL cleanDB()");

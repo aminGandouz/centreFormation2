@@ -129,7 +129,6 @@ public class MySqlFormationDao implements FormationDao {
             }
 
         } catch (SQLException e) {
-            //System.err.println(" Probleme avec la requete SQL effacerFormation(String formation); \n" + e.getMessage());
             System.out.println("Probleme avec la requete SQL effacerFormation(String formation)");
             e.printStackTrace();
         } finally {

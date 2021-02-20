@@ -92,7 +92,6 @@ public class MySqlAdminDao implements AdminDao {
         }
     }
 
-    /* TODO verifier si le formateur doit avoir un status */
     @Override
     public List<Formateur> getListFormateurs() {
         List<Formateur> listFormateurs = new ArrayList<>();
@@ -101,7 +100,7 @@ public class MySqlAdminDao implements AdminDao {
         ResultSet rs = null;
         int IdRole = 3;
         String sql = " select IdUtilisateur,Nom,Prenom,Adresse,Telephone,Email,Login,Password,IdRole,DenomRole,IdStatus,DenomStatus from utilisateur join roles on utilisateur.Role = roles.IdRole \n"
-                + " join Status on utilisateur.Status = Status.IdStatus where utilisateur.Role = ? ";
+                + " join Status on utilisateur.Status = Status.IdStatus where utilisateur.Role = ? and Enable = true ";
         try {
             c = MySqlDaoFactory.getInstance().getConnection();
             ps = c.prepareStatement(sql);
@@ -126,9 +125,6 @@ public class MySqlAdminDao implements AdminDao {
         return listFormateurs;
     }
 
-    ///// Autre méthode dans MySqlUtilisateurDao getUserByName ///////////////
-    ///// Autre méthode dans MySqlUtilisateurDao getUserByName ///////////////
-    ///// Autre méthode dans MySqlUtilisateurDao getUserByName ///////////////
     @Override
     public Formateur getFormateurByName(String nomFormateur) {
         Formateur formateur = null;

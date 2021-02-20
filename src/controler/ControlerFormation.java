@@ -30,11 +30,11 @@ public class ControlerFormation implements ControlerUtils {
     private String dureeString = null;
     private String maxParticipantString = null;
     private String nbreParticipantMinString = null;
+    private Boolean nameFormation = false;
 
     public void gererFormation() {
         vueAdmin.menuGererFormation();
         int choixDuMenus = choixMenus(1, 5);
-
         switch (choixDuMenus) {
             case 1:
                 vueAdmin.ajouterUneFormation();
@@ -73,7 +73,7 @@ public class ControlerFormation implements ControlerUtils {
         do {
             vueAdmin.entrerNomFormation();
             nom = s.nextLine();
-        } while (nom == null || nom.trim().isEmpty());// trim retire les espaces avt et apres et Si ce qui reste est vide => le string de base n'avait que des espaces 
+        } while (nom == null || nom.trim().isEmpty() || model.getCentre().getFormationByName(nom) != null);
         f.setIntitule(nom);
 
         do {
@@ -118,8 +118,13 @@ public class ControlerFormation implements ControlerUtils {
         if (form == null) {
             vueAdmin.erreurFormation();
         } else {
-            Formation.effacerFormation(formation);
-            vueAdmin.deleteDone(formation);
+            Boolean ok = form.effacerFormation();
+            if (ok) {
+                vueAdmin.deleteDone(formation);
+            } else {
+                vueAdmin.notDelete(form);
+                gererFormation();
+            }
         }
     }
 
@@ -132,15 +137,27 @@ public class ControlerFormation implements ControlerUtils {
         } while (intitule == null || intitule.trim().isEmpty());
         Formation form = model.getForm().getFormationAvecNom(intitule);
         if (form == null) {
-            /* TODO mettre un message d'erreur */
+            vueAdmin.erreurFormation();
             ctrlFormation.gererFormation();
         } else {
             vueAdmin.afficherLaFormation(form);
+
             do {
-                vueAdmin.entrerNomFormation();
-                nom = s.nextLine();
-            } while (nom == null || nom.trim().isEmpty());// trim retire les espaces avt et apres et Si ce qui reste est vide => le string de base n'avait que des espaces 
-            form.setIntitule(intitule);
+                do {
+                    vueAdmin.entrerNomFormation();
+                    nom = s.nextLine();
+                } while (nom == null || nom.trim().isEmpty());
+                if (model.getCentre().getFormationByName(nom) != null) {
+                    Formation formationExist = model.getCentre().getFormationByName(nom);
+                    if (form.getIdFormation() == formationExist.getIdFormation()) {
+                        nameFormation = true;
+                    }
+                } else {
+                    nameFormation = true;
+                }
+            } while (!nameFormation);
+            form.setIntitule(nom);
+
             do {
                 vueAdmin.entrerLePrixDeLAFormation();
                 prixString = s.nextLine();
@@ -166,7 +183,7 @@ public class ControlerFormation implements ControlerUtils {
                 nbreParticipantMinString = s.nextLine();
             } while (!nbreParticipantMinString.matches("\\d+") || Integer.parseInt(nbreParticipantMinString) <= 0);
             nbreParticipantMin = Integer.parseInt(nbreParticipantMinString);
-            form.setMaxParticipant(nbreParticipantMin);
+            form.setNbreParticipantMin(nbreParticipantMin);
         }
         form.updateFormation();
     }
@@ -219,20 +236,9 @@ public class ControlerFormation implements ControlerUtils {
 
         switch (choix) {
             case 1:
-
                 listFormations = model.getListFormations();
                 vueAdmin.afficherFormations(listFormations);
-//                vueAdmin.faireUnChoixValide();
-//                int idFormation = s.nextInt();
                 gererLaSession(listFormations);
-//                Formation f = new Formation();
-//                f = model.getCentre().getFormationById(idFormation);
-//                if (f == null) {
-//                    vueAdmin.erreur();
-//                } else {
-//                    gererSessionFormation(f.getIdFormation());
-//                }
-
                 break;
             case 2:
                 ctrlAdmin.menuAdmin((Admin) controler.getUserConnecte());
@@ -261,7 +267,6 @@ public class ControlerFormation implements ControlerUtils {
                 gererSessionFormation(form);
                 break;
             case 4://Afficher les sessions
-                System.out.println(form);
                 listSessionFormation = model.getCentre().getListSessionByIdFormation(form.getIdFormation());
                 vueAdmin.afficherListSessionAvecNbParticipant(listSessionFormation, form);
                 gererSessionFormation(form);
@@ -282,7 +287,6 @@ public class ControlerFormation implements ControlerUtils {
         int idFormation = 0;
         vueAdmin.faireUnChoixValide();
         Formation f = new Formation();
-        // gérer erreur 
         if (s.hasNextInt()) {
             idFormation = s.nextInt();
         } else {

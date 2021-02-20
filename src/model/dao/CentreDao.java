@@ -42,4 +42,4 @@ public interface CentreDao {
     public Inscription getInscritpionById(int choix);
 
 }
-    //public List<Utilisateur> getListformateur();
+

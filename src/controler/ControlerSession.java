@@ -34,6 +34,9 @@ public class ControlerSession implements ControlerUtils {
         Date d = null;
         try {
             d = new SimpleDateFormat("dd-MM-yyyy").parse(dateDeb);
+            if (d.before(new Date())) {
+                addSession(form);
+            }
         } catch (ParseException ex) {
             vueAdmin.problemeFormatDate();
             addSession(form);
@@ -88,5 +91,3 @@ public class ControlerSession implements ControlerUtils {
     }
 
 }
-/* and session.DateDebut not BETWEEN "01-01-2021" and " 21-03-2021" and session.DateFin not BETWEEN  "01-01-2021" and " 21-03-2021"
- group by utilisateur.IdUtilisateur */

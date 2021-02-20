@@ -71,7 +71,7 @@ public class VueStagiaire {
     }
 
     public void plusDePlaceDispo() {
-        System.out.println("\n" + " Il n'y a plus de place disponible pour cette session  " + "\n");
+        System.out.println("\n" + " Il n'y a plus de place disponible pour cette session ou vous y êtes déja inscrit  " + "\n");
     }
 
     public void ajoutOK() {

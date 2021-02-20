@@ -31,7 +31,5 @@ public interface SessionDao {
 
     public void editerSession(Session aThis);
 
-
-
 }
-    //public List<Session> getListFormationAvecNom(String nameSession);
+

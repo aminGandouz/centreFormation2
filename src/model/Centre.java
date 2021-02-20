@@ -32,7 +32,6 @@ public class Centre {
     /**
      * ***** Getters and Setters ******
      */
-    
     public Formation getFormation() {
         return formation;
     }
@@ -87,7 +86,6 @@ public class Centre {
     /**
      * ***** FORMATION ******
      */
-    
     public List<Formation> getListFormations() {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         CentreDao centreDao = factory.createCentreDao();
@@ -99,6 +97,12 @@ public class Centre {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         FormationDao formationDao = factory.createFormationDao();
         return formationDao.getFormationById(idFormation);
+    }
+
+    public Formation getFormationByName(String nom) {
+        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
+        FormationDao formationDao = factory.createFormationDao();
+        return formationDao.getFormationByName(nom);
     }
 
     /**
@@ -164,12 +168,6 @@ public class Centre {
         return listLocaux;
     }
 
-    public Boolean ajoutLocal(Local local) {
-        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
-        CentreDao centreDao = factory.createCentreDao();
-        return centreDao.ajoutLocal(local);
-    }
-
     public List<Local> getLocauxDispo(Session session) {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         CentreDao centreDao = factory.createCentreDao();
@@ -207,6 +205,12 @@ public class Centre {
     /**
      * ***** USER ******
      */
+    public Utilisateur ifEmailExist(String email) {
+        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
+        UtilisateurDao utilisateurDao = factory.createUtilisateurDaoDao();
+        return utilisateurDao.ifEmailExist(email);
+    }
+
     public Utilisateur getUserById(Integer idUtilisateur) {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         UtilisateurDao utilisateurDao = factory.createUtilisateurDaoDao();
@@ -253,6 +257,12 @@ public class Centre {
         return centreDao.getListFormationsByNameFormation(nomFormation);
     }
 
+    public Utilisateur getUserByLogin(String login) {
+        AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
+        UtilisateurDao utilisateurDao = factory.createUtilisateurDaoDao();
+        return utilisateurDao.getUserByLogin(login);
+    }
+
     /**
      * ***** INSCRIPTION ******
      */
@@ -268,6 +278,16 @@ public class Centre {
         return centreDao.getInscritpionById(choix);
     }
 
+    public boolean inscriptionExist(List<Inscription> listInscription, Inscription inscription) {
+        Boolean ok = false;
+        for (Inscription inscription1 : listInscription) {
+            if (inscription1.getIdInscription() == inscription.getIdInscription()) {
+                ok = true;
+            }
+        }
+        return ok;
+    }
+
     /**
      * ***** CLEAN ******
      */
@@ -277,13 +297,4 @@ public class Centre {
         centreDao.cleanDB();
     }
 
-    public boolean inscriptionExist(List<Inscription> listInscription, Inscription inscription) {
-        Boolean ok = false;       
-        for (Inscription inscription1 : listInscription) {
-            if(inscription1.getIdInscription() == inscription.getIdInscription()){
-                ok = true;
-            }
-        }
-        return ok;
-    }
 }

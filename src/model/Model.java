@@ -13,6 +13,7 @@ public class Model {
     private final Formateur formateur;
     private final Centre centre;
     private final Status status;
+    private final Local local;
 
     public Model() {
         this.admin = new Admin();
@@ -23,6 +24,7 @@ public class Model {
         this.formateur = new Formateur();
         this.centre = new Centre();
         this.status = new Status();
+        this.local = new Local();
     }
 
     public Formateur getFormateur() {
@@ -56,6 +58,11 @@ public class Model {
     public Status getStatus() {
         return status;
     }
+
+    public Local getLocal() {
+        return local;
+    }
+    
 
     public List<Formation> getListFormations() {
         return centre.getListFormations();

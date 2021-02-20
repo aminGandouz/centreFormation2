@@ -49,6 +49,7 @@ public class MySqlStagiaireDao implements StagiaireDao {
         } catch (SQLException e) {
             System.out.println("Probleme avec la requete SQL addStagiaire(Stagiaire stagiaire)");
             e.printStackTrace();
+            
         } finally {
             MySqlDaoFactory.closeResultSet(rs);
             MySqlDaoFactory.closeStatement(ps);
@@ -175,13 +176,14 @@ public class MySqlStagiaireDao implements StagiaireDao {
         Connection c = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String sql = " SELECT `IdInscription`, `IdUtilisateur`, `IdSession`, `EstPaye`, `Signalisation`, `prix` FROM `inscrire` WHERE idUtilisateur = ? and signalisation = ? ";
+        String sql = " SELECT `IdInscription`, `IdUtilisateur`, `IdSession`, `EstPaye`, `Signalisation`, `prix` FROM `inscrire` WHERE idUtilisateur = ? and signalisation = ? and EstPaye = ? ";
 
         try {
             c = MySqlDaoFactory.getInstance().getConnection();
             ps = c.prepareStatement(sql);
             ps.setInt(1, stagiaire.getIdUtilisateur());
             ps.setBoolean(2, false);
+            ps.setBoolean(3, false);
             rs = ps.executeQuery();
             while (rs.next()) {
                 Inscription inscritpion = new Inscription(rs.getInt(1), rs.getBoolean(2), rs.getBoolean(3), rs.getFloat(4));

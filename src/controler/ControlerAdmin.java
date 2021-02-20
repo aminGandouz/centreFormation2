@@ -12,11 +12,12 @@ import model.Inscription;
 import model.Local;
 import model.Session;
 import model.Status;
+import model.Utilisateur;
 import org.mindrot.jbcrypt.BCrypt;
 import vue.VueAdmin;
 import vue.VueFormateur;
 import vue.VueLogin;
-// import static controler.ControlerUtils.*;
+// import static controler.ControlerUtils.*;// autre manière de faire 
 
 public class ControlerAdmin implements ControlerUtils {
 
@@ -31,11 +32,12 @@ public class ControlerAdmin implements ControlerUtils {
     private Status newStatus = new Status();
     private String reduction = null;
     private Double reduc = null;
+    private Boolean emailExist;
+    private Boolean loginExist;
 
     /**
      * ***** All methods ******
      */
-    
     public void menuAdmin(Admin admin) {
         vueAdmin.presentationVueAdmin();
         vueAdmin.menuAdmin();
@@ -149,17 +151,19 @@ public class ControlerAdmin implements ControlerUtils {
         formateur.setTelephone(telephone);
 
         do {
-            vueLogin.entrerEmail();
-            email = s.nextLine();
-        } while (!email.matches("^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$")
-                || email == null
-                || email.trim().isEmpty());
+            do {
+                vueLogin.entrerEmail();
+                email = s.nextLine();
+            } while (!email.matches("^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$")
+                    || email == null
+                    || email.trim().isEmpty());       
+        } while (model.getCentre().ifEmailExist(email) != null);
         formateur.setEmail(email);
 
         do {
             vueLogin.entrerLogin();
             login = s.nextLine();
-        } while (login == null || login.trim().isEmpty());
+        } while (login == null || login.trim().isEmpty() || model.getCentre().getUserByLogin(login) != null);
         formateur.setLogin(login);
 
         do {
@@ -230,17 +234,37 @@ public class ControlerAdmin implements ControlerUtils {
             formateur.setTelephone(telephone);
 
             do {
-                vueLogin.entrerEmail();
-                email = s.nextLine();
-            } while (!email.matches("^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$")
-                    || email == null
-                    || email.trim().isEmpty());
+                do {
+                    vueLogin.entrerEmail();
+                    email = s.nextLine();
+                } while (!email.matches("^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$")
+                        || email == null
+                        || email.trim().isEmpty());
+                if (model.getCentre().ifEmailExist(email) != null) {
+                    Utilisateur user = model.getCentre().ifEmailExist(email);
+                    if (user.getIdUtilisateur() == formateur.getIdUtilisateur()) {
+                        emailExist = true;
+                    }
+                } else {
+                    emailExist = true;
+                }
+            } while (model.getCentre().ifEmailExist(email) != null && !emailExist);
             formateur.setEmail(email);
 
             do {
-                vueLogin.entrerLogin();
-                login = s.nextLine();
-            } while (login == null || login.trim().isEmpty());
+                do {
+                    vueLogin.entrerLogin();
+                    login = s.nextLine();
+                } while (login == null || login.trim().isEmpty());
+                if (model.getCentre().getUserByLogin(login) != null) {
+                    Utilisateur user = model.getCentre().getUserByLogin(login);
+                    if (user.getIdUtilisateur() == formateur.getIdUtilisateur()) {
+                        loginExist = true;
+                    }
+                } else {
+                    loginExist = true;
+                }
+            } while (!loginExist);
             formateur.setLogin(login);
 
             do {
@@ -254,7 +278,6 @@ public class ControlerAdmin implements ControlerUtils {
         }
     }
 
-    /* TODO vérifier le do while */
     private void CommuniquerFormateurPrestations() {
         s.nextLine();
         String nomFormateur;
@@ -263,15 +286,8 @@ public class ControlerAdmin implements ControlerUtils {
         do {
             vueAdmin.entrerNom();
             nomFormateur = s.nextLine();
-        } while (nomFormateur == null || nomFormateur.trim().isEmpty());
-        // do {                      
+        } while (nomFormateur == null || nomFormateur.trim().isEmpty());                    
         listSessionFormateur = model.getCentre().getListSessionByNameFormateur(nomFormateur);
-//                    s.nextLine();
-//                    if(listSessionFormateur.isEmpty()){
-//                        vueAdmin.formateurInconnu(nomFormateur);
-//                    }
-//                    
-//                } while (listFormateurs.isEmpty());
         vueAdmin.listDesFormateurs();
         vueAdmin.afficherListSessionFormateur(listSessionFormateur);
 
@@ -293,25 +309,25 @@ public class ControlerAdmin implements ControlerUtils {
             vueAdmin.choixDeLaFormation();
             List<Formation> listFormationDuFormateur = model.getCentre().getListDuFormateur(f.getIdUtilisateur());
             vueAdmin.afficherFormations(listFormationDuFormateur);
-            
+
             if (listFormationDuFormateur.isEmpty()) {
                 vueAdmin.listFormationVidePourFormateur();
             }
-            
+
             int choixDeLaFormation = s.nextInt();
             Formation existe = model.getCentre().getFormationById(choixDeLaFormation);
-            
+
             if (existe == null) {
                 deleteFormationDuFormateur(admin);
             } else {
                 Boolean formationDelete = model.getCentre().deleteFormationDuFormateur(f.getIdUtilisateur(), existe.getIdFormation());
-                
+
                 if (formationDelete) {
                     vueAdmin.formationDelete();
                 } else {
                     vueAdmin.formationNoDelete();
                 }
-                
+
                 gererFormateur(admin);
             }
         }
@@ -322,24 +338,24 @@ public class ControlerAdmin implements ControlerUtils {
         List<Formateur> listFormateurs3 = model.getCentre().getListFormateurs();
         vueAdmin.afficherFormateurs(listFormateurs3);
         vueAdmin.faireUnChoixValide();
-        
+
         int idFormateur = s.nextInt();
         Formateur f = (Formateur) model.getCentre().getUserById(idFormateur);
-        
+
         if (null == f) {
             vueAdmin.erreur();
             ajoutFormationAuFormateur(admin);
         } else {
             List<Formation> listFormationDispoPOurFormateur = model.getCentre().getListFormationDispoPOurFormateur(f.getIdUtilisateur());
             vueAdmin.afficherFormations(listFormationDispoPOurFormateur);
-            
+
             if (listFormationDispoPOurFormateur.isEmpty()) {
                 vueAdmin.listFormationVide();
             }
-            
+
             int choixDeLaFormation = s.nextInt();
             Formation existe = model.getCentre().getFormationById(choixDeLaFormation);
-            
+
             if (null == existe) {
                 ajoutFormationAuFormateur(admin);
             } else {
@@ -372,13 +388,13 @@ public class ControlerAdmin implements ControlerUtils {
         newStatus.setReduction(reduc);
 
         Boolean ajoutStatusOk = model.getStatus().ajoutStatus(newStatus);
-        
+
         if (ajoutStatusOk) {
             vueAdmin.ajoutStatusOk();
         } else {
             vueAdmin.ajoutStatusNotOk();
         }
-        
+
         menuAdmin(admin);
     }
 
@@ -388,21 +404,21 @@ public class ControlerAdmin implements ControlerUtils {
     private void gererLocaux(Admin admin) {
         Local local = new Local();
         s.nextLine();
-        
+
         do {
             vueAdmin.entrerNom();
             nom = s.nextLine();
         } while (nom == null || nom.trim().isEmpty());
         local.setNomLocal(nom);
-        
-        Boolean ok = model.getCentre().ajoutLocal(local);
-        
+
+        Boolean ok = model.getLocal().ajoutLocal(local);
+
         if (ok) {
             vueAdmin.ajoutLocalOK();
         } else {
             vueAdmin.ajoutLocalNotOk();
         }
-        
+
         menuAdmin(admin);
     }
 
@@ -410,22 +426,22 @@ public class ControlerAdmin implements ControlerUtils {
         s.nextLine();
         int choix = 0;
         Inscription inscription = null;
-        
+
         vueAdmin.listDesInscriptions();
         List<Inscription> listInscription = model.getCentre().getListDesInscriptions();
-        
+
         if (listInscription.isEmpty()) {
             vueAdmin.listInscriptionVide();
             menuAdmin(admin);
         } else {
             vueAdmin.afficheList(listInscription);
-            
+
             do {
                 vueAdmin.faireUnChoixValide();
                 if (s.hasNextInt()) {
                     choix = s.nextInt();
                     inscription = model.getCentre().getInscritpionById(choix);
-                    
+
                     if (inscription == null) {
                         gererPaiementInscription(admin);
                     }

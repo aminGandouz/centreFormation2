@@ -100,6 +100,12 @@ public class Formation {
         this.listSession = listSession;
     }
 
+    @Override
+    public String toString() {
+        return "Formation{" + "idFormation=" + idFormation + ", intitule=" + intitule + ", prix=" + prix + ", duree=" + duree + ", maxParticipant=" + maxParticipant + ", nbreParticipantMin=" + nbreParticipantMin + ", listSession=" + listSession + ", listSessionByFormation=" + listSessionByFormation + '}';
+    }
+    
+
     /**
      * ***** FORMATION *********
      */
@@ -109,10 +115,10 @@ public class Formation {
         formationDao.ajoutFormation(this);
     }
 
-    public static void effacerFormation(String formation) {
+    public Boolean effacerFormation() {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         FormationDao formationDao = factory.createFormationDao();
-        formationDao.effacerFormation(formation);
+        return formationDao.effacerFormation(this);
     }
 
     public void updateFormation() {
@@ -126,10 +132,6 @@ public class Formation {
         FormationDao formationDao = factory.createFormationDao();
         return formationDao.getFormationAvecNom(nomFormation);
     }
-
-    ////// changer car la methode se trouve dans formation et session //////
-    ////// changer car la methode se trouve dans formation et session //////
-    ////// changer car la methode se trouve dans formation et session //////
     
     /**
      * ***** SESSION *********

@@ -51,7 +51,7 @@ public class Inscription {
     public void setSignalisation(Boolean signalisation) {
         this.signalisation = signalisation;
     }
-
+    
     public Boolean ajoutStagiaire(Stagiaire stagiaire, Session session) {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         InscriptionDao inscriptionDao = factory.createInscriptionDao();
@@ -61,7 +61,7 @@ public class Inscription {
     public void updateEstPaye() {
         AbstractDaoFactory factory = AbstractDaoFactory.getFactory();
         InscriptionDao inscriptionDao = factory.createInscriptionDao();
-        inscriptionDao. updateEstPaye(this);
+        inscriptionDao.updateEstPaye(this);
     }
 
 }

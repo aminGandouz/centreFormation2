@@ -9,7 +9,7 @@ public interface FormationDao {
 
     public void ajoutFormation(Formation f);
 
-    public void effacerFormation(String formation);
+    public Boolean effacerFormation(Formation formation);
 
     public void updateFormation(Formation formation);
 
@@ -20,4 +20,6 @@ public interface FormationDao {
     public Formation getFormationAvecNom(String nomFormation);
 
     public Formation getFormationById(Integer idFormation);
+
+    public Formation getFormationByName(String nom);
 }

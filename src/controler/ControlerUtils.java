@@ -2,12 +2,15 @@
 package controler;
 
 import java.util.Scanner;
+import model.Local;
 import model.Model;
+import vue.VueAdmin;
 
 public interface ControlerUtils {
 
     public Scanner s = new Scanner(System.in);
     public Model model = new Model();
+    public Local local = new Local();
     public ControlerAdmin ctrlAdmin = new ControlerAdmin();
     public ControlerStagiaire ctrlStagiaire = new ControlerStagiaire();
     public ControlerFormation ctrlFormation = new ControlerFormation();
@@ -15,6 +18,7 @@ public interface ControlerUtils {
     public ControlerSession ctrlSession = new ControlerSession();
     public Controler controler = new Controler();
     public ControlerFormateur ctrlFormateur = new ControlerFormateur();
+    public VueAdmin vueAdmin = new VueAdmin();
 
     default int choixMenus(int min, int max) {
         int choixDuMenus = s.nextInt();
@@ -23,6 +27,12 @@ public interface ControlerUtils {
             choixDuMenus = s.nextInt();
         }
         return choixDuMenus;
+    }
+    default void checkInt() {
+        while (!s.hasNextInt()) {
+            vueAdmin.erreurNumberString();
+            s.nextLine();
+        }
     }
 
     public void erreur();
@@ -43,5 +53,6 @@ public interface ControlerUtils {
             return choixDuMenus;           
         } while (!s.hasNextInt());
     }
+  
 }
 

@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Comparator;
 import model.dao.AbstractDaoFactory;
 import model.dao.CentreDao;
 
@@ -51,6 +52,14 @@ public class Status {
         CentreDao centreDao = factory.createCentreDao();
         return centreDao.ajoutStatus(newStatus);
     }
+
+    public static Comparator<Status> ComparatorId = new Comparator<Status>() {
+
+        @Override
+        public int compare(Status e1, Status e2) {
+            return (int)e1.getIdStatus().compareTo(e2.getIdStatus());
+        }
+    };
 
     @Override
     public String toString() {
